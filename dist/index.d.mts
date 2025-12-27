@@ -1,6 +1,7 @@
 import * as _opentelemetry_api from '@opentelemetry/api';
-import { Span, Attributes, TextMapPropagator, Context, Baggage, BaggageEntry, AttributeValue } from '@opentelemetry/api';
+import { Span, Attributes, TextMapPropagator, Tracer, Context, Baggage, BaggageEntry, AttributeValue } from '@opentelemetry/api';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { SpanExporter } from '@opentelemetry/sdk-trace-base';
 
 /**
  * Moleculer Context type (simplified for middleware use)
@@ -264,11 +265,35 @@ interface MoleculerOTelOptions {
      * @default false
      */
     perServiceTracing?: boolean;
+    /**
+     * Enable multi-service mode with separate TracerProviders per Moleculer service.
+     * Each Moleculer service will appear as a distinct service in Jaeger's service dropdown.
+     *
+     * Requires `initTracerRegistry()` to be called instead of `initOTel()`.
+     *
+     * @example
+     * ```typescript
+     * import { initTracerRegistry, createOTelMiddleware } from 'moleculer-otel';
+     *
+     * initTracerRegistry({
+     *   endpoint: 'http://localhost:4318/v1/traces',
+     * });
+     *
+     * const broker = new ServiceBroker({
+     *   middlewares: [
+     *     createOTelMiddleware({ multiServiceMode: true }),
+     *   ],
+     * });
+     * ```
+     *
+     * @default false
+     */
+    multiServiceMode?: boolean;
 }
 /**
  * Internal resolved options with all defaults applied
  */
-interface ResolvedOptions extends Required<Omit<MoleculerOTelOptions, 'serviceName' | 'propagator' | 'errorFilter' | 'onSpanStart' | 'onSpanEnd' | 'metrics' | 'perServiceTracing'>> {
+interface ResolvedOptions extends Required<Omit<MoleculerOTelOptions, 'serviceName' | 'propagator' | 'errorFilter' | 'onSpanStart' | 'onSpanEnd' | 'metrics' | 'perServiceTracing' | 'multiServiceMode'>> {
     serviceName?: string;
     propagator?: TextMapPropagator;
     errorFilter?: ErrorFilterCallback;
@@ -276,6 +301,7 @@ interface ResolvedOptions extends Required<Omit<MoleculerOTelOptions, 'serviceNa
     onSpanEnd?: OnSpanEndCallback;
     metrics?: MetricsOptions;
     perServiceTracing: boolean;
+    multiServiceMode: boolean;
 }
 
 /**
@@ -392,6 +418,108 @@ declare function getOTelSDK(): NodeSDK | null;
  * Manually shutdown the SDK.
  */
 declare function shutdownOTel(): Promise<void>;
+
+/**
+ * Options for initializing the TracerProviderRegistry
+ */
+interface RegistryOptions {
+    /** OTLP endpoint URL for trace export */
+    endpoint?: string;
+    /** Custom exporter instance (overrides endpoint) */
+    exporter?: SpanExporter;
+    /** Additional resource attributes shared by all services */
+    resourceAttributes?: Record<string, string>;
+    /** Batch processor options */
+    batchOptions?: BatchProcessorOptions;
+    /**
+     * Use batch processor (default: true in production)
+     * Set to false for SimpleSpanProcessor (immediate export, good for development)
+     */
+    useBatch?: boolean;
+    /** Enable console logging (default: true) */
+    logging?: boolean;
+}
+/**
+ * Registry that manages multiple TracerProviders, one per Moleculer service.
+ * This allows each service to appear as a separate service in Jaeger.
+ *
+ * Each TracerProvider has its own Resource with a unique service.name,
+ * but they all share a single exporter for efficiency.
+ */
+declare class TracerProviderRegistry {
+    private providers;
+    private exporter;
+    private baseAttributes;
+    private batchOptions;
+    private useBatch;
+    private logging;
+    private isFirstProvider;
+    constructor(options: RegistryOptions);
+    /**
+     * Get a tracer for the specified Moleculer service.
+     * Creates a new TracerProvider with service-specific Resource if not exists.
+     *
+     * @param serviceName - The Moleculer service name (e.g., 'v1.users', 'v1.auth')
+     * @returns Tracer instance for the service
+     */
+    getTracer(serviceName: string): Tracer;
+    /**
+     * Creates a new TracerProvider with service-specific Resource
+     */
+    private createProvider;
+    /**
+     * Get all registered service names
+     */
+    getServiceNames(): string[];
+    /**
+     * Check if a service provider exists
+     */
+    hasService(serviceName: string): boolean;
+    /**
+     * Shutdown all providers and flush pending spans
+     */
+    shutdown(): Promise<void>;
+    /**
+     * Force flush all pending spans
+     */
+    forceFlush(): Promise<void>;
+}
+/**
+ * Initialize the TracerProviderRegistry for multi-service mode.
+ * Call this instead of initOTel() when you want each Moleculer service
+ * to appear as a separate service in Jaeger.
+ *
+ * @example
+ * ```typescript
+ * import { initTracerRegistry, createOTelMiddleware } from 'moleculer-otel';
+ *
+ * // Initialize multi-service registry
+ * initTracerRegistry({
+ *   endpoint: 'http://localhost:4318/v1/traces',
+ *   resourceAttributes: {
+ *     'deployment.environment': 'production',
+ *   },
+ * });
+ *
+ * const broker = new ServiceBroker({
+ *   middlewares: [
+ *     createOTelMiddleware({ multiServiceMode: true }),
+ *   ],
+ * });
+ * ```
+ *
+ * @param options - Registry initialization options
+ * @returns The TracerProviderRegistry instance
+ */
+declare function initTracerRegistry(options?: RegistryOptions): TracerProviderRegistry;
+/**
+ * Get the current TracerProviderRegistry instance, if initialized.
+ */
+declare function getTracerRegistry(): TracerProviderRegistry | null;
+/**
+ * Manually shutdown the TracerProviderRegistry.
+ */
+declare function shutdownTracerRegistry(): Promise<void>;
 
 /**
  * Carrier type for Moleculer meta propagation.
@@ -663,4 +791,4 @@ declare function createOTelMiddleware(options?: MoleculerOTelOptions): Moleculer
  */
 declare function getTracer(name?: string): _opentelemetry_api.Tracer;
 
-export { type ActionSchema, type AttributeExtractor, type BatchProcessorOptions, type CallOptions, type EmitOptions, type ErrorFilterCallback, type EventSchema, type MetricsOptions, type MoleculerContext, MoleculerMetrics, type MoleculerMiddleware, type MoleculerOTelOptions, type OTelInitOptions, type OnSpanEndCallback, type OnSpanStartCallback, type ResolvedOptions, type SamplingOptions, type SamplingStrategy, type ServiceBroker, type SpanType, type TraceLogContext, createLogBindings, createOTelMiddleware, createTracingLoggerMiddleware, createOTelMiddleware as default, extractContext, flattenObject, getAllBaggage, getBaggage, getBaggageValue, getMetrics, getOTelSDK, getTraceLogContext, getTracer, hasTraceContext, initOTel, injectContext, pickKeys, resetMetrics, sanitizeAttributeValue, shouldExclude, shutdownOTel, truncateValue, withBaggage, wrapLogFunction };
+export { type ActionSchema, type AttributeExtractor, type BatchProcessorOptions, type CallOptions, type EmitOptions, type ErrorFilterCallback, type EventSchema, type MetricsOptions, type MoleculerContext, MoleculerMetrics, type MoleculerMiddleware, type MoleculerOTelOptions, type OTelInitOptions, type OnSpanEndCallback, type OnSpanStartCallback, type RegistryOptions, type ResolvedOptions, type SamplingOptions, type SamplingStrategy, type ServiceBroker, type SpanType, type TraceLogContext, TracerProviderRegistry, createLogBindings, createOTelMiddleware, createTracingLoggerMiddleware, createOTelMiddleware as default, extractContext, flattenObject, getAllBaggage, getBaggage, getBaggageValue, getMetrics, getOTelSDK, getTraceLogContext, getTracer, getTracerRegistry, hasTraceContext, initOTel, initTracerRegistry, injectContext, pickKeys, resetMetrics, sanitizeAttributeValue, shouldExclude, shutdownOTel, shutdownTracerRegistry, truncateValue, withBaggage, wrapLogFunction };

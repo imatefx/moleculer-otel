@@ -1,4 +1,4 @@
-import { trace, context, SpanKind } from '@opentelemetry/api';
+import { trace, context, SpanKind, Tracer } from '@opentelemetry/api';
 import type { Readable } from 'stream';
 import type {
   MoleculerContext,
@@ -12,8 +12,25 @@ import { buildActionAttributes, buildResponseAttributes } from '../tracing/span-
 import { recordError, recordSuccess } from '../tracing/error-handler';
 import { shouldExclude } from '../utils/pattern-matcher';
 import { getMetrics, MoleculerMetrics } from '../metrics';
+import { getTracerRegistry, TracerProviderRegistry } from '../sdk/tracer-registry';
 
 const TRACER_NAME = 'moleculer-otel';
+
+/**
+ * Get the appropriate tracer based on service name and configuration.
+ * In multi-service mode, returns a service-specific tracer from the registry.
+ * Otherwise, returns the global tracer.
+ */
+function getTracerForService(
+  serviceName: string,
+  registry: TracerProviderRegistry | null,
+  useMultiService: boolean
+): Tracer {
+  if (useMultiService && registry) {
+    return registry.getTracer(serviceName);
+  }
+  return trace.getTracer(TRACER_NAME);
+}
 
 /**
  * Check if a value is a Node.js stream
@@ -46,8 +63,11 @@ export interface ActionMiddlewareHandlers {
 export function createActionMiddleware(
   options: ResolvedOptions
 ): ActionMiddlewareHandlers {
-  const tracer = trace.getTracer(TRACER_NAME);
   const metaKey = options.metaKey;
+
+  // Get registry for multi-service mode
+  const registry = getTracerRegistry();
+  const useMultiService = options.multiServiceMode && registry !== null;
 
   // Initialize metrics if enabled
   let metricsCollector: MoleculerMetrics | null = null;
@@ -85,6 +105,9 @@ export function createActionMiddleware(
       const parentContext = getActiveContext();
       const serviceName = resolvedActionName.split('.')[0];
 
+      // Get appropriate tracer for this service
+      const tracer = getTracerForService(serviceName, registry, useMultiService);
+
       // Detect streaming
       const isStreamingRequest = isStream(params);
 
@@ -121,7 +144,7 @@ export function createActionMiddleware(
 
       return context.with(spanContext, async () => {
         try {
-          const result = await next.call(this, actionName, params, enhancedOpts);
+          const result = await next.call(this, actionName as string, params, enhancedOpts);
           recordSuccess(span);
           return result;
         } catch (error) {
@@ -153,6 +176,10 @@ export function createActionMiddleware(
       // Extract trace context from meta
       const carrier = (ctx.meta?.[metaKey] as Record<string, string>) || {};
       const parentContext = extractContext(getActiveContext(), carrier);
+
+      // Get service-specific tracer in multi-service mode
+      const serviceName = actionName.split('.')[0];
+      const tracer = getTracerForService(serviceName, registry, useMultiService);
 
       // Detect streaming request
       const isStreamingRequest = isStream(ctx.params);
@@ -293,6 +320,10 @@ export function createActionMiddleware(
       const parentContext = extractContext(getActiveContext(), carrier);
 
       const remoteServiceName = actionName.split('.')[0];
+
+      // Get service-specific tracer in multi-service mode
+      const tracer = getTracerForService(remoteServiceName, registry, useMultiService);
+
       const span = tracer.startSpan(
         `remote:${actionName}`,
         {

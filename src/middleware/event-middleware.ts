@@ -1,4 +1,4 @@
-import { trace, context, SpanKind } from '@opentelemetry/api';
+import { trace, context, SpanKind, Tracer } from '@opentelemetry/api';
 import type {
   MoleculerContext,
   EventSchema,
@@ -11,8 +11,25 @@ import { buildEventAttributes } from '../tracing/span-attributes';
 import { recordError, recordSuccess } from '../tracing/error-handler';
 import { shouldExclude } from '../utils/pattern-matcher';
 import { getMetrics, MoleculerMetrics } from '../metrics';
+import { getTracerRegistry, TracerProviderRegistry } from '../sdk/tracer-registry';
 
 const TRACER_NAME = 'moleculer-otel';
+
+/**
+ * Get the appropriate tracer based on service name and configuration.
+ * In multi-service mode, returns a service-specific tracer from the registry.
+ * Otherwise, returns the global tracer.
+ */
+function getTracerForService(
+  serviceName: string,
+  registry: TracerProviderRegistry | null,
+  useMultiService: boolean
+): Tracer {
+  if (useMultiService && registry) {
+    return registry.getTracer(serviceName);
+  }
+  return trace.getTracer(TRACER_NAME);
+}
 
 export interface EventMiddlewareHandlers {
   emit: (
@@ -33,8 +50,11 @@ export interface EventMiddlewareHandlers {
 export function createEventMiddleware(
   options: ResolvedOptions
 ): EventMiddlewareHandlers {
-  const tracer = trace.getTracer(TRACER_NAME);
   const metaKey = options.metaKey;
+
+  // Get registry for multi-service mode
+  const registry = getTracerRegistry();
+  const useMultiService = options.multiServiceMode && registry !== null;
 
   // Initialize metrics if enabled
   let metricsCollector: MoleculerMetrics | null = null;
@@ -63,6 +83,9 @@ export function createEventMiddleware(
 
       // Extract service name from event (events are often namespaced like 'users.created')
       const eventServiceName = eventName.split('.')[0];
+
+      // Get service-specific tracer in multi-service mode
+      const tracer = getTracerForService(eventServiceName, registry, useMultiService);
 
       const span = tracer.startSpan(
         `emit:${eventName}`,
@@ -134,6 +157,9 @@ export function createEventMiddleware(
       // Extract service name from event (events are often namespaced like 'users.created')
       const broadcastServiceName = eventName.split('.')[0];
 
+      // Get service-specific tracer in multi-service mode
+      const tracer = getTracerForService(broadcastServiceName, registry, useMultiService);
+
       const span = tracer.startSpan(
         `broadcast:${eventName}`,
         {
@@ -200,6 +226,12 @@ export function createEventMiddleware(
       // Extract trace context from meta
       const carrier = (ctx.meta?.[metaKey] as Record<string, string>) || {};
       const parentContext = extractContext(getActiveContext(), carrier);
+
+      // Get service name from the handler's service context
+      const handlerServiceName = ctx.service?.name || eventName.split('.')[0];
+
+      // Get service-specific tracer in multi-service mode
+      const tracer = getTracerForService(handlerServiceName, registry, useMultiService);
 
       const span = tracer.startSpan(
         `handle:${eventName}`,

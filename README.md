@@ -193,7 +193,9 @@ createOTelMiddleware({
 
 ## Per-Service Visibility in Jaeger
 
-When running multiple Moleculer services in a single process, they share the same OpenTelemetry resource. To distinguish services in Jaeger:
+When running multiple Moleculer services in a single process, they share the same OpenTelemetry resource. There are two approaches to distinguish services:
+
+### Option 1: Span Attribute (Simple)
 
 ```typescript
 createOTelMiddleware({
@@ -206,6 +208,62 @@ This adds two attributes to every span:
 - `service.name` - Added when `perServiceTracing: true`
 
 Filter in Jaeger using Tags: `moleculer.service=users`
+
+### Option 2: Multi-Service Mode (Full Separation)
+
+For **true per-service separation** in Jaeger's service dropdown, use multi-service mode. This creates a separate TracerProvider for each Moleculer service, each with its own Resource:
+
+```typescript
+import { initTracerRegistry, createOTelMiddleware } from 'moleculer-otel';
+import { ServiceBroker } from 'moleculer';
+
+// Initialize the TracerProviderRegistry (instead of initOTel)
+initTracerRegistry({
+  endpoint: 'http://localhost:4318/v1/traces',
+  resourceAttributes: {
+    'deployment.environment': 'production',
+  },
+});
+
+const broker = new ServiceBroker({
+  middlewares: [
+    createOTelMiddleware({
+      multiServiceMode: true,  // Enable per-service TracerProviders
+    }),
+  ],
+});
+```
+
+**Result**: Each Moleculer service (e.g., `v1.auth`, `v1.users`, `v1.lines`) appears as a **separate service** in Jaeger's service dropdown.
+
+#### Registry Options
+
+```typescript
+initTracerRegistry({
+  // OTLP endpoint (default: http://localhost:4318/v1/traces)
+  endpoint: 'http://jaeger:4318/v1/traces',
+
+  // Additional resource attributes shared by all services
+  resourceAttributes: {
+    'deployment.environment': 'production',
+    'service.version': '1.0.0',
+  },
+
+  // Batch processor options
+  batchOptions: {
+    maxQueueSize: 2048,
+    maxExportBatchSize: 512,
+    scheduledDelayMillis: 5000,
+    exportTimeoutMillis: 30000,
+  },
+
+  // Use batch processor (default: true in production)
+  useBatch: true,
+
+  // Enable logging (default: true)
+  logging: true,
+});
+```
 
 ## Metrics
 
@@ -411,6 +469,14 @@ export { createOTelMiddleware } from 'moleculer-otel';
 
 // SDK initialization
 export { initOTel, getOTelSDK, shutdownOTel } from 'moleculer-otel';
+
+// Multi-service mode (TracerProviderRegistry)
+export {
+  initTracerRegistry,
+  getTracerRegistry,
+  shutdownTracerRegistry,
+  TracerProviderRegistry,
+} from 'moleculer-otel';
 
 // Tracer access
 export { getTracer } from 'moleculer-otel';

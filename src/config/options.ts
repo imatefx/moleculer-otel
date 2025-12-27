@@ -129,13 +129,38 @@ export interface MoleculerOTelOptions {
    * @default false
    */
   perServiceTracing?: boolean;
+
+  /**
+   * Enable multi-service mode with separate TracerProviders per Moleculer service.
+   * Each Moleculer service will appear as a distinct service in Jaeger's service dropdown.
+   *
+   * Requires `initTracerRegistry()` to be called instead of `initOTel()`.
+   *
+   * @example
+   * ```typescript
+   * import { initTracerRegistry, createOTelMiddleware } from 'moleculer-otel';
+   *
+   * initTracerRegistry({
+   *   endpoint: 'http://localhost:4318/v1/traces',
+   * });
+   *
+   * const broker = new ServiceBroker({
+   *   middlewares: [
+   *     createOTelMiddleware({ multiServiceMode: true }),
+   *   ],
+   * });
+   * ```
+   *
+   * @default false
+   */
+  multiServiceMode?: boolean;
 }
 
 /**
  * Internal resolved options with all defaults applied
  */
 export interface ResolvedOptions extends Required<Omit<MoleculerOTelOptions,
-  'serviceName' | 'propagator' | 'errorFilter' | 'onSpanStart' | 'onSpanEnd' | 'metrics' | 'perServiceTracing'>> {
+  'serviceName' | 'propagator' | 'errorFilter' | 'onSpanStart' | 'onSpanEnd' | 'metrics' | 'perServiceTracing' | 'multiServiceMode'>> {
   serviceName?: string;
   propagator?: TextMapPropagator;
   errorFilter?: ErrorFilterCallback;
@@ -143,4 +168,5 @@ export interface ResolvedOptions extends Required<Omit<MoleculerOTelOptions,
   onSpanEnd?: OnSpanEndCallback;
   metrics?: MetricsOptions;
   perServiceTracing: boolean;
+  multiServiceMode: boolean;
 }

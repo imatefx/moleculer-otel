@@ -17,6 +17,15 @@ export type {
   SamplingStrategy,
 } from './sdk/init';
 
+// Re-export multi-service mode (TracerProviderRegistry)
+export {
+  initTracerRegistry,
+  getTracerRegistry,
+  shutdownTracerRegistry,
+  TracerProviderRegistry,
+} from './sdk/tracer-registry';
+export type { RegistryOptions } from './sdk/tracer-registry';
+
 // Re-export utilities for advanced usage
 export {
   injectContext,

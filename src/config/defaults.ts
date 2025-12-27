@@ -15,6 +15,7 @@ export const DEFAULT_OPTIONS: ResolvedOptions = {
   excludeEvents: [],
   maxAttributeValueLength: 1024,
   perServiceTracing: false,
+  multiServiceMode: false,
 };
 
 /**

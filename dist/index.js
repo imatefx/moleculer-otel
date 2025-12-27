@@ -342,12 +342,12 @@ var require_src = __commonJS({
 });
 
 // node_modules/@opentelemetry/propagator-b3/build/esm/common.js
-var import_api7, B3_DEBUG_FLAG_KEY;
+var import_api4, B3_DEBUG_FLAG_KEY;
 var init_common = __esm({
   "node_modules/@opentelemetry/propagator-b3/build/esm/common.js"() {
     "use strict";
-    import_api7 = require("@opentelemetry/api");
-    B3_DEBUG_FLAG_KEY = (0, import_api7.createContextKey)("OpenTelemetry Context Key B3 Debug Flag");
+    import_api4 = require("@opentelemetry/api");
+    B3_DEBUG_FLAG_KEY = (0, import_api4.createContextKey)("OpenTelemetry Context Key B3 Debug Flag");
   }
 });
 
@@ -367,7 +367,7 @@ var init_constants = __esm({
 
 // node_modules/@opentelemetry/propagator-b3/build/esm/B3MultiPropagator.js
 function isValidSampledValue(sampled) {
-  return sampled === import_api8.TraceFlags.SAMPLED || sampled === import_api8.TraceFlags.NONE;
+  return sampled === import_api5.TraceFlags.SAMPLED || sampled === import_api5.TraceFlags.NONE;
 }
 function parseHeader(header) {
   return Array.isArray(header) ? header[0] : header;
@@ -398,19 +398,19 @@ function getTraceFlags(carrier, getter) {
   var traceFlags = getHeaderValue(carrier, getter, X_B3_SAMPLED);
   var debug = getDebug(carrier, getter);
   if (debug === "1" || VALID_SAMPLED_VALUES.has(traceFlags)) {
-    return import_api8.TraceFlags.SAMPLED;
+    return import_api5.TraceFlags.SAMPLED;
   }
   if (traceFlags === void 0 || VALID_UNSAMPLED_VALUES.has(traceFlags)) {
-    return import_api8.TraceFlags.NONE;
+    return import_api5.TraceFlags.NONE;
   }
   return;
 }
-var import_api8, import_core2, VALID_SAMPLED_VALUES, VALID_UNSAMPLED_VALUES, B3MultiPropagator;
+var import_api5, import_core, VALID_SAMPLED_VALUES, VALID_UNSAMPLED_VALUES, B3MultiPropagator;
 var init_B3MultiPropagator = __esm({
   "node_modules/@opentelemetry/propagator-b3/build/esm/B3MultiPropagator.js"() {
     "use strict";
-    import_api8 = require("@opentelemetry/api");
-    import_core2 = require("@opentelemetry/core");
+    import_api5 = require("@opentelemetry/api");
+    import_core = require("@opentelemetry/core");
     init_common();
     init_constants();
     VALID_SAMPLED_VALUES = /* @__PURE__ */ new Set([true, "true", "True", "1", 1]);
@@ -420,8 +420,8 @@ var init_B3MultiPropagator = __esm({
       function B3MultiPropagator2() {
       }
       B3MultiPropagator2.prototype.inject = function(context8, carrier, setter) {
-        var spanContext = import_api8.trace.getSpanContext(context8);
-        if (!spanContext || !(0, import_api8.isSpanContextValid)(spanContext) || (0, import_core2.isTracingSuppressed)(context8))
+        var spanContext = import_api5.trace.getSpanContext(context8);
+        if (!spanContext || !(0, import_api5.isSpanContextValid)(spanContext) || (0, import_core.isTracingSuppressed)(context8))
           return;
         var debug = context8.getValue(B3_DEBUG_FLAG_KEY);
         setter.set(carrier, X_B3_TRACE_ID, spanContext.traceId);
@@ -429,7 +429,7 @@ var init_B3MultiPropagator = __esm({
         if (debug === "1") {
           setter.set(carrier, X_B3_FLAGS, debug);
         } else if (spanContext.traceFlags !== void 0) {
-          setter.set(carrier, X_B3_SAMPLED, (import_api8.TraceFlags.SAMPLED & spanContext.traceFlags) === import_api8.TraceFlags.SAMPLED ? "1" : "0");
+          setter.set(carrier, X_B3_SAMPLED, (import_api5.TraceFlags.SAMPLED & spanContext.traceFlags) === import_api5.TraceFlags.SAMPLED ? "1" : "0");
         }
       };
       B3MultiPropagator2.prototype.extract = function(context8, carrier, getter) {
@@ -437,9 +437,9 @@ var init_B3MultiPropagator = __esm({
         var spanId = getSpanId(carrier, getter);
         var traceFlags = getTraceFlags(carrier, getter);
         var debug = getDebug(carrier, getter);
-        if ((0, import_api8.isValidTraceId)(traceId) && (0, import_api8.isValidSpanId)(spanId) && isValidSampledValue(traceFlags)) {
+        if ((0, import_api5.isValidTraceId)(traceId) && (0, import_api5.isValidSpanId)(spanId) && isValidSampledValue(traceFlags)) {
           context8 = context8.setValue(B3_DEBUG_FLAG_KEY, debug);
-          return import_api8.trace.setSpanContext(context8, {
+          return import_api5.trace.setSpanContext(context8, {
             traceId,
             spanId,
             isRemote: true,
@@ -468,19 +468,19 @@ function convertToTraceId128(traceId) {
 }
 function convertToTraceFlags(samplingState) {
   if (samplingState && SAMPLED_VALUES.has(samplingState)) {
-    return import_api9.TraceFlags.SAMPLED;
+    return import_api6.TraceFlags.SAMPLED;
   }
-  return import_api9.TraceFlags.NONE;
+  return import_api6.TraceFlags.NONE;
 }
-var import_api9, import_core3, __read2, B3_CONTEXT_REGEX, PADDING, SAMPLED_VALUES, DEBUG_STATE, B3SinglePropagator;
+var import_api6, import_core2, __read, B3_CONTEXT_REGEX, PADDING, SAMPLED_VALUES, DEBUG_STATE, B3SinglePropagator;
 var init_B3SinglePropagator = __esm({
   "node_modules/@opentelemetry/propagator-b3/build/esm/B3SinglePropagator.js"() {
     "use strict";
-    import_api9 = require("@opentelemetry/api");
-    import_core3 = require("@opentelemetry/core");
+    import_api6 = require("@opentelemetry/api");
+    import_core2 = require("@opentelemetry/core");
     init_common();
     init_constants();
-    __read2 = function(o, n) {
+    __read = function(o, n) {
       var m = typeof Symbol === "function" && o[Symbol.iterator];
       if (!m) return o;
       var i = m.call(o), r, ar = [], e;
@@ -506,8 +506,8 @@ var init_B3SinglePropagator = __esm({
       function B3SinglePropagator2() {
       }
       B3SinglePropagator2.prototype.inject = function(context8, carrier, setter) {
-        var spanContext = import_api9.trace.getSpanContext(context8);
-        if (!spanContext || !(0, import_api9.isSpanContextValid)(spanContext) || (0, import_core3.isTracingSuppressed)(context8))
+        var spanContext = import_api6.trace.getSpanContext(context8);
+        if (!spanContext || !(0, import_api6.isSpanContextValid)(spanContext) || (0, import_core2.isTracingSuppressed)(context8))
           return;
         var samplingState = context8.getValue(B3_DEBUG_FLAG_KEY) || spanContext.traceFlags & 1;
         var value = spanContext.traceId + "-" + spanContext.spanId + "-" + samplingState;
@@ -521,15 +521,15 @@ var init_B3SinglePropagator = __esm({
         var match = b3Context.match(B3_CONTEXT_REGEX);
         if (!match)
           return context8;
-        var _a = __read2(match, 4), extractedTraceId = _a[1], spanId = _a[2], samplingState = _a[3];
+        var _a = __read(match, 4), extractedTraceId = _a[1], spanId = _a[2], samplingState = _a[3];
         var traceId = convertToTraceId128(extractedTraceId);
-        if (!(0, import_api9.isValidTraceId)(traceId) || !(0, import_api9.isValidSpanId)(spanId))
+        if (!(0, import_api6.isValidTraceId)(traceId) || !(0, import_api6.isValidSpanId)(spanId))
           return context8;
         var traceFlags = convertToTraceFlags(samplingState);
         if (samplingState === DEBUG_STATE) {
           context8 = context8.setValue(B3_DEBUG_FLAG_KEY, samplingState);
         }
-        return import_api9.trace.setSpanContext(context8, {
+        return import_api6.trace.setSpanContext(context8, {
           traceId,
           spanId,
           isRemote: true,
@@ -557,11 +557,11 @@ var init_types = __esm({
 });
 
 // node_modules/@opentelemetry/propagator-b3/build/esm/B3Propagator.js
-var import_core4, B3Propagator;
+var import_core3, B3Propagator;
 var init_B3Propagator = __esm({
   "node_modules/@opentelemetry/propagator-b3/build/esm/B3Propagator.js"() {
     "use strict";
-    import_core4 = require("@opentelemetry/core");
+    import_core3 = require("@opentelemetry/core");
     init_B3MultiPropagator();
     init_B3SinglePropagator();
     init_constants();
@@ -583,7 +583,7 @@ var init_B3Propagator = __esm({
         }
       }
       B3Propagator2.prototype.inject = function(context8, carrier, setter) {
-        if ((0, import_core4.isTracingSuppressed)(context8)) {
+        if ((0, import_core3.isTracingSuppressed)(context8)) {
           return;
         }
         this._inject(context8, carrier, setter);
@@ -636,16 +636,16 @@ var init_enums = __esm({
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/build/esm/Span.js
-var import_api10, import_core5, import_semantic_conventions2, __assign2, __values, __read3, __spreadArray, Span2;
+var import_api7, import_core4, import_semantic_conventions, __assign, __values, __read2, __spreadArray, Span2;
 var init_Span = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/Span.js"() {
     "use strict";
-    import_api10 = require("@opentelemetry/api");
-    import_core5 = require("@opentelemetry/core");
-    import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
+    import_api7 = require("@opentelemetry/api");
+    import_core4 = require("@opentelemetry/core");
+    import_semantic_conventions = require("@opentelemetry/semantic-conventions");
     init_enums();
-    __assign2 = function() {
-      __assign2 = Object.assign || function(t) {
+    __assign = function() {
+      __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
           s = arguments[i];
           for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -653,7 +653,7 @@ var init_Span = __esm({
         }
         return t;
       };
-      return __assign2.apply(this, arguments);
+      return __assign.apply(this, arguments);
     };
     __values = function(o) {
       var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
@@ -666,7 +666,7 @@ var init_Span = __esm({
       };
       throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     };
-    __read3 = function(o, n) {
+    __read2 = function(o, n) {
       var m = typeof Symbol === "function" && o[Symbol.iterator];
       if (!m) return o;
       var i = m.call(o), r, ar = [], e;
@@ -705,7 +705,7 @@ var init_Span = __esm({
         this._droppedEventsCount = 0;
         this._droppedLinksCount = 0;
         this.status = {
-          code: import_api10.SpanStatusCode.UNSET
+          code: import_api7.SpanStatusCode.UNSET
         };
         this.endTime = [0, 0];
         this._ended = false;
@@ -716,8 +716,8 @@ var init_Span = __esm({
         this.kind = kind;
         this.links = links;
         var now = Date.now();
-        this._performanceStartTime = import_core5.otperformance.now();
-        this._performanceOffset = now - (this._performanceStartTime + (0, import_core5.getTimeOrigin)());
+        this._performanceStartTime = import_core4.otperformance.now();
+        this._performanceOffset = now - (this._performanceStartTime + (0, import_core4.getTimeOrigin)());
         this._startTimeProvided = startTime != null;
         this.startTime = this._getTime(startTime !== null && startTime !== void 0 ? startTime : now);
         this.resource = parentTracer.resource;
@@ -737,11 +737,11 @@ var init_Span = __esm({
         if (value == null || this._isSpanEnded())
           return this;
         if (key.length === 0) {
-          import_api10.diag.warn("Invalid attribute key: " + key);
+          import_api7.diag.warn("Invalid attribute key: " + key);
           return this;
         }
-        if (!(0, import_core5.isAttributeValue)(value)) {
-          import_api10.diag.warn("Invalid attribute value set for key: " + key);
+        if (!(0, import_core4.isAttributeValue)(value)) {
+          import_api7.diag.warn("Invalid attribute value set for key: " + key);
           return this;
         }
         if (Object.keys(this.attributes).length >= this._spanLimits.attributeCountLimit && !Object.prototype.hasOwnProperty.call(this.attributes, key)) {
@@ -755,7 +755,7 @@ var init_Span = __esm({
         var e_1, _a;
         try {
           for (var _b = __values(Object.entries(attributes)), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var _d = __read3(_c.value, 2), k = _d[0], v = _d[1];
+            var _d = __read2(_c.value, 2), k = _d[0], v = _d[1];
             this.setAttribute(k, v);
           }
         } catch (e_1_1) {
@@ -773,24 +773,24 @@ var init_Span = __esm({
         if (this._isSpanEnded())
           return this;
         if (this._spanLimits.eventCountLimit === 0) {
-          import_api10.diag.warn("No events allowed.");
+          import_api7.diag.warn("No events allowed.");
           this._droppedEventsCount++;
           return this;
         }
         if (this.events.length >= this._spanLimits.eventCountLimit) {
           if (this._droppedEventsCount === 0) {
-            import_api10.diag.debug("Dropping extra events.");
+            import_api7.diag.debug("Dropping extra events.");
           }
           this.events.shift();
           this._droppedEventsCount++;
         }
-        if ((0, import_core5.isTimeInput)(attributesOrStartTime)) {
-          if (!(0, import_core5.isTimeInput)(timeStamp)) {
+        if ((0, import_core4.isTimeInput)(attributesOrStartTime)) {
+          if (!(0, import_core4.isTimeInput)(timeStamp)) {
             timeStamp = attributesOrStartTime;
           }
           attributesOrStartTime = void 0;
         }
-        var attributes = (0, import_core5.sanitizeAttributes)(attributesOrStartTime);
+        var attributes = (0, import_core4.sanitizeAttributes)(attributesOrStartTime);
         this.events.push({
           name,
           attributes,
@@ -805,15 +805,15 @@ var init_Span = __esm({
       };
       Span3.prototype.addLinks = function(links) {
         var _a;
-        (_a = this.links).push.apply(_a, __spreadArray([], __read3(links), false));
+        (_a = this.links).push.apply(_a, __spreadArray([], __read2(links), false));
         return this;
       };
       Span3.prototype.setStatus = function(status) {
         if (this._isSpanEnded())
           return this;
-        this.status = __assign2({}, status);
+        this.status = __assign({}, status);
         if (this.status.message != null && typeof status.message !== "string") {
-          import_api10.diag.warn("Dropping invalid status.message of type '" + typeof status.message + "', expected 'string'");
+          import_api7.diag.warn("Dropping invalid status.message of type '" + typeof status.message + "', expected 'string'");
           delete this.status.message;
         }
         return this;
@@ -826,40 +826,40 @@ var init_Span = __esm({
       };
       Span3.prototype.end = function(endTime) {
         if (this._isSpanEnded()) {
-          import_api10.diag.error(this.name + " " + this._spanContext.traceId + "-" + this._spanContext.spanId + " - You can only call end() on a span once.");
+          import_api7.diag.error(this.name + " " + this._spanContext.traceId + "-" + this._spanContext.spanId + " - You can only call end() on a span once.");
           return;
         }
         this._ended = true;
         this.endTime = this._getTime(endTime);
-        this._duration = (0, import_core5.hrTimeDuration)(this.startTime, this.endTime);
+        this._duration = (0, import_core4.hrTimeDuration)(this.startTime, this.endTime);
         if (this._duration[0] < 0) {
-          import_api10.diag.warn("Inconsistent start and end time, startTime > endTime. Setting span duration to 0ms.", this.startTime, this.endTime);
+          import_api7.diag.warn("Inconsistent start and end time, startTime > endTime. Setting span duration to 0ms.", this.startTime, this.endTime);
           this.endTime = this.startTime.slice();
           this._duration = [0, 0];
         }
         if (this._droppedEventsCount > 0) {
-          import_api10.diag.warn("Dropped " + this._droppedEventsCount + " events because eventCountLimit reached");
+          import_api7.diag.warn("Dropped " + this._droppedEventsCount + " events because eventCountLimit reached");
         }
         this._spanProcessor.onEnd(this);
       };
       Span3.prototype._getTime = function(inp) {
-        if (typeof inp === "number" && inp <= import_core5.otperformance.now()) {
-          return (0, import_core5.hrTime)(inp + this._performanceOffset);
+        if (typeof inp === "number" && inp <= import_core4.otperformance.now()) {
+          return (0, import_core4.hrTime)(inp + this._performanceOffset);
         }
         if (typeof inp === "number") {
-          return (0, import_core5.millisToHrTime)(inp);
+          return (0, import_core4.millisToHrTime)(inp);
         }
         if (inp instanceof Date) {
-          return (0, import_core5.millisToHrTime)(inp.getTime());
+          return (0, import_core4.millisToHrTime)(inp.getTime());
         }
-        if ((0, import_core5.isTimeInputHrTime)(inp)) {
+        if ((0, import_core4.isTimeInputHrTime)(inp)) {
           return inp;
         }
         if (this._startTimeProvided) {
-          return (0, import_core5.millisToHrTime)(Date.now());
+          return (0, import_core4.millisToHrTime)(Date.now());
         }
-        var msDuration = import_core5.otperformance.now() - this._performanceStartTime;
-        return (0, import_core5.addHrTimes)(this.startTime, (0, import_core5.millisToHrTime)(msDuration));
+        var msDuration = import_core4.otperformance.now() - this._performanceStartTime;
+        return (0, import_core4.addHrTimes)(this.startTime, (0, import_core4.millisToHrTime)(msDuration));
       };
       Span3.prototype.isRecording = function() {
         return this._ended === false;
@@ -867,24 +867,24 @@ var init_Span = __esm({
       Span3.prototype.recordException = function(exception, time) {
         var attributes = {};
         if (typeof exception === "string") {
-          attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_MESSAGE] = exception;
+          attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_MESSAGE] = exception;
         } else if (exception) {
           if (exception.code) {
-            attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_TYPE] = exception.code.toString();
+            attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_TYPE] = exception.code.toString();
           } else if (exception.name) {
-            attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_TYPE] = exception.name;
+            attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_TYPE] = exception.name;
           }
           if (exception.message) {
-            attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_MESSAGE] = exception.message;
+            attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_MESSAGE] = exception.message;
           }
           if (exception.stack) {
-            attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_STACKTRACE] = exception.stack;
+            attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_STACKTRACE] = exception.stack;
           }
         }
-        if (attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_TYPE] || attributes[import_semantic_conventions2.SEMATTRS_EXCEPTION_MESSAGE]) {
+        if (attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_TYPE] || attributes[import_semantic_conventions.SEMATTRS_EXCEPTION_MESSAGE]) {
           this.addEvent(ExceptionEventName, attributes, time);
         } else {
-          import_api10.diag.warn("Failed to record an exception " + exception);
+          import_api7.diag.warn("Failed to record an exception " + exception);
         }
       };
       Object.defineProperty(Span3.prototype, "duration", {
@@ -924,7 +924,7 @@ var init_Span = __esm({
       });
       Span3.prototype._isSpanEnded = function() {
         if (this._ended) {
-          import_api10.diag.warn("Can not execute the operation on ended Span {traceId: " + this._spanContext.traceId + ", spanId: " + this._spanContext.spanId + "}");
+          import_api7.diag.warn("Can not execute the operation on ended Span {traceId: " + this._spanContext.traceId + ", spanId: " + this._spanContext.spanId + "}");
         }
         return this._ended;
       };
@@ -938,7 +938,7 @@ var init_Span = __esm({
         var _this = this;
         var limit = this._attributeValueLengthLimit;
         if (limit <= 0) {
-          import_api10.diag.warn("Attribute value limit must be positive, got " + limit);
+          import_api7.diag.warn("Attribute value limit must be positive, got " + limit);
           return value;
         }
         if (typeof value === "string") {
@@ -1016,12 +1016,12 @@ var init_AlwaysOnSampler = __esm({
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/build/esm/sampler/ParentBasedSampler.js
-var import_api11, import_core6, ParentBasedSampler;
+var import_api8, import_core5, ParentBasedSampler;
 var init_ParentBasedSampler = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/sampler/ParentBasedSampler.js"() {
     "use strict";
-    import_api11 = require("@opentelemetry/api");
-    import_core6 = require("@opentelemetry/core");
+    import_api8 = require("@opentelemetry/api");
+    import_core5 = require("@opentelemetry/core");
     init_AlwaysOffSampler();
     init_AlwaysOnSampler();
     ParentBasedSampler = /** @class */
@@ -1030,7 +1030,7 @@ var init_ParentBasedSampler = __esm({
         var _a, _b, _c, _d;
         this._root = config.root;
         if (!this._root) {
-          (0, import_core6.globalErrorHandler)(new Error("ParentBasedSampler must have a root sampler configured"));
+          (0, import_core5.globalErrorHandler)(new Error("ParentBasedSampler must have a root sampler configured"));
           this._root = new AlwaysOnSampler();
         }
         this._remoteParentSampled = (_a = config.remoteParentSampled) !== null && _a !== void 0 ? _a : new AlwaysOnSampler();
@@ -1039,17 +1039,17 @@ var init_ParentBasedSampler = __esm({
         this._localParentNotSampled = (_d = config.localParentNotSampled) !== null && _d !== void 0 ? _d : new AlwaysOffSampler();
       }
       ParentBasedSampler3.prototype.shouldSample = function(context8, traceId, spanName, spanKind, attributes, links) {
-        var parentContext = import_api11.trace.getSpanContext(context8);
-        if (!parentContext || !(0, import_api11.isSpanContextValid)(parentContext)) {
+        var parentContext = import_api8.trace.getSpanContext(context8);
+        if (!parentContext || !(0, import_api8.isSpanContextValid)(parentContext)) {
           return this._root.shouldSample(context8, traceId, spanName, spanKind, attributes, links);
         }
         if (parentContext.isRemote) {
-          if (parentContext.traceFlags & import_api11.TraceFlags.SAMPLED) {
+          if (parentContext.traceFlags & import_api8.TraceFlags.SAMPLED) {
             return this._remoteParentSampled.shouldSample(context8, traceId, spanName, spanKind, attributes, links);
           }
           return this._remoteParentNotSampled.shouldSample(context8, traceId, spanName, spanKind, attributes, links);
         }
-        if (parentContext.traceFlags & import_api11.TraceFlags.SAMPLED) {
+        if (parentContext.traceFlags & import_api8.TraceFlags.SAMPLED) {
           return this._localParentSampled.shouldSample(context8, traceId, spanName, spanKind, attributes, links);
         }
         return this._localParentNotSampled.shouldSample(context8, traceId, spanName, spanKind, attributes, links);
@@ -1063,11 +1063,11 @@ var init_ParentBasedSampler = __esm({
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/build/esm/sampler/TraceIdRatioBasedSampler.js
-var import_api12, TraceIdRatioBasedSampler;
+var import_api9, TraceIdRatioBasedSampler;
 var init_TraceIdRatioBasedSampler = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/sampler/TraceIdRatioBasedSampler.js"() {
     "use strict";
-    import_api12 = require("@opentelemetry/api");
+    import_api9 = require("@opentelemetry/api");
     init_Sampler();
     TraceIdRatioBasedSampler = /** @class */
     (function() {
@@ -1081,7 +1081,7 @@ var init_TraceIdRatioBasedSampler = __esm({
       }
       TraceIdRatioBasedSampler3.prototype.shouldSample = function(context8, traceId) {
         return {
-          decision: (0, import_api12.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound ? SamplingDecision.RECORD_AND_SAMPLED : SamplingDecision.NOT_RECORD
+          decision: (0, import_api9.isValidTraceId)(traceId) && this._accumulate(traceId) < this._upperBound ? SamplingDecision.RECORD_AND_SAMPLED : SamplingDecision.NOT_RECORD
         };
       };
       TraceIdRatioBasedSampler3.prototype.toString = function() {
@@ -1108,7 +1108,7 @@ var init_TraceIdRatioBasedSampler = __esm({
 
 // node_modules/@opentelemetry/sdk-trace-base/build/esm/config.js
 function loadDefaultConfig() {
-  var env = (0, import_core7.getEnv)();
+  var env = (0, import_core6.getEnv)();
   return {
     sampler: buildSamplerFromEnv(env),
     forceFlushTimeoutMillis: 3e4,
@@ -1129,59 +1129,59 @@ function loadDefaultConfig() {
 }
 function buildSamplerFromEnv(environment) {
   if (environment === void 0) {
-    environment = (0, import_core7.getEnv)();
+    environment = (0, import_core6.getEnv)();
   }
   switch (environment.OTEL_TRACES_SAMPLER) {
-    case import_core7.TracesSamplerValues.AlwaysOn:
+    case import_core6.TracesSamplerValues.AlwaysOn:
       return new AlwaysOnSampler();
-    case import_core7.TracesSamplerValues.AlwaysOff:
+    case import_core6.TracesSamplerValues.AlwaysOff:
       return new AlwaysOffSampler();
-    case import_core7.TracesSamplerValues.ParentBasedAlwaysOn:
+    case import_core6.TracesSamplerValues.ParentBasedAlwaysOn:
       return new ParentBasedSampler({
         root: new AlwaysOnSampler()
       });
-    case import_core7.TracesSamplerValues.ParentBasedAlwaysOff:
+    case import_core6.TracesSamplerValues.ParentBasedAlwaysOff:
       return new ParentBasedSampler({
         root: new AlwaysOffSampler()
       });
-    case import_core7.TracesSamplerValues.TraceIdRatio:
+    case import_core6.TracesSamplerValues.TraceIdRatio:
       return new TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment));
-    case import_core7.TracesSamplerValues.ParentBasedTraceIdRatio:
+    case import_core6.TracesSamplerValues.ParentBasedTraceIdRatio:
       return new ParentBasedSampler({
         root: new TraceIdRatioBasedSampler(getSamplerProbabilityFromEnv(environment))
       });
     default:
-      import_api13.diag.error('OTEL_TRACES_SAMPLER value "' + environment.OTEL_TRACES_SAMPLER + " invalid, defaulting to " + FALLBACK_OTEL_TRACES_SAMPLER + '".');
+      import_api10.diag.error('OTEL_TRACES_SAMPLER value "' + environment.OTEL_TRACES_SAMPLER + " invalid, defaulting to " + FALLBACK_OTEL_TRACES_SAMPLER + '".');
       return new AlwaysOnSampler();
   }
 }
 function getSamplerProbabilityFromEnv(environment) {
   if (environment.OTEL_TRACES_SAMPLER_ARG === void 0 || environment.OTEL_TRACES_SAMPLER_ARG === "") {
-    import_api13.diag.error("OTEL_TRACES_SAMPLER_ARG is blank, defaulting to " + DEFAULT_RATIO + ".");
+    import_api10.diag.error("OTEL_TRACES_SAMPLER_ARG is blank, defaulting to " + DEFAULT_RATIO + ".");
     return DEFAULT_RATIO;
   }
   var probability = Number(environment.OTEL_TRACES_SAMPLER_ARG);
   if (isNaN(probability)) {
-    import_api13.diag.error("OTEL_TRACES_SAMPLER_ARG=" + environment.OTEL_TRACES_SAMPLER_ARG + " was given, but it is invalid, defaulting to " + DEFAULT_RATIO + ".");
+    import_api10.diag.error("OTEL_TRACES_SAMPLER_ARG=" + environment.OTEL_TRACES_SAMPLER_ARG + " was given, but it is invalid, defaulting to " + DEFAULT_RATIO + ".");
     return DEFAULT_RATIO;
   }
   if (probability < 0 || probability > 1) {
-    import_api13.diag.error("OTEL_TRACES_SAMPLER_ARG=" + environment.OTEL_TRACES_SAMPLER_ARG + " was given, but it is out of range ([0..1]), defaulting to " + DEFAULT_RATIO + ".");
+    import_api10.diag.error("OTEL_TRACES_SAMPLER_ARG=" + environment.OTEL_TRACES_SAMPLER_ARG + " was given, but it is out of range ([0..1]), defaulting to " + DEFAULT_RATIO + ".");
     return DEFAULT_RATIO;
   }
   return probability;
 }
-var import_api13, import_core7, FALLBACK_OTEL_TRACES_SAMPLER, DEFAULT_RATIO;
+var import_api10, import_core6, FALLBACK_OTEL_TRACES_SAMPLER, DEFAULT_RATIO;
 var init_config = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/config.js"() {
     "use strict";
-    import_api13 = require("@opentelemetry/api");
-    import_core7 = require("@opentelemetry/core");
+    import_api10 = require("@opentelemetry/api");
+    import_core6 = require("@opentelemetry/core");
     init_AlwaysOffSampler();
     init_AlwaysOnSampler();
     init_ParentBasedSampler();
     init_TraceIdRatioBasedSampler();
-    FALLBACK_OTEL_TRACES_SAMPLER = import_core7.TracesSamplerValues.AlwaysOn;
+    FALLBACK_OTEL_TRACES_SAMPLER = import_core6.TracesSamplerValues.AlwaysOn;
     DEFAULT_RATIO = 1;
   }
 });
@@ -1200,27 +1200,27 @@ function mergeConfig(userConfig) {
 function reconfigureLimits(userConfig) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
   var spanLimits = Object.assign({}, userConfig.spanLimits);
-  var parsedEnvConfig = (0, import_core8.getEnvWithoutDefaults)();
-  spanLimits.attributeCountLimit = (_f = (_e = (_d = (_b = (_a = userConfig.spanLimits) === null || _a === void 0 ? void 0 : _a.attributeCountLimit) !== null && _b !== void 0 ? _b : (_c = userConfig.generalLimits) === null || _c === void 0 ? void 0 : _c.attributeCountLimit) !== null && _d !== void 0 ? _d : parsedEnvConfig.OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT) !== null && _e !== void 0 ? _e : parsedEnvConfig.OTEL_ATTRIBUTE_COUNT_LIMIT) !== null && _f !== void 0 ? _f : import_core8.DEFAULT_ATTRIBUTE_COUNT_LIMIT;
-  spanLimits.attributeValueLengthLimit = (_m = (_l = (_k = (_h = (_g = userConfig.spanLimits) === null || _g === void 0 ? void 0 : _g.attributeValueLengthLimit) !== null && _h !== void 0 ? _h : (_j = userConfig.generalLimits) === null || _j === void 0 ? void 0 : _j.attributeValueLengthLimit) !== null && _k !== void 0 ? _k : parsedEnvConfig.OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT) !== null && _l !== void 0 ? _l : parsedEnvConfig.OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT) !== null && _m !== void 0 ? _m : import_core8.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT;
+  var parsedEnvConfig = (0, import_core7.getEnvWithoutDefaults)();
+  spanLimits.attributeCountLimit = (_f = (_e = (_d = (_b = (_a = userConfig.spanLimits) === null || _a === void 0 ? void 0 : _a.attributeCountLimit) !== null && _b !== void 0 ? _b : (_c = userConfig.generalLimits) === null || _c === void 0 ? void 0 : _c.attributeCountLimit) !== null && _d !== void 0 ? _d : parsedEnvConfig.OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT) !== null && _e !== void 0 ? _e : parsedEnvConfig.OTEL_ATTRIBUTE_COUNT_LIMIT) !== null && _f !== void 0 ? _f : import_core7.DEFAULT_ATTRIBUTE_COUNT_LIMIT;
+  spanLimits.attributeValueLengthLimit = (_m = (_l = (_k = (_h = (_g = userConfig.spanLimits) === null || _g === void 0 ? void 0 : _g.attributeValueLengthLimit) !== null && _h !== void 0 ? _h : (_j = userConfig.generalLimits) === null || _j === void 0 ? void 0 : _j.attributeValueLengthLimit) !== null && _k !== void 0 ? _k : parsedEnvConfig.OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT) !== null && _l !== void 0 ? _l : parsedEnvConfig.OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT) !== null && _m !== void 0 ? _m : import_core7.DEFAULT_ATTRIBUTE_VALUE_LENGTH_LIMIT;
   return Object.assign({}, userConfig, { spanLimits });
 }
-var import_core8;
+var import_core7;
 var init_utility = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/utility.js"() {
     "use strict";
     init_config();
-    import_core8 = require("@opentelemetry/core");
+    import_core7 = require("@opentelemetry/core");
   }
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/build/esm/export/BatchSpanProcessorBase.js
-var import_api14, import_core9, BatchSpanProcessorBase;
+var import_api11, import_core8, BatchSpanProcessorBase;
 var init_BatchSpanProcessorBase = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/BatchSpanProcessorBase.js"() {
     "use strict";
-    import_api14 = require("@opentelemetry/api");
-    import_core9 = require("@opentelemetry/core");
+    import_api11 = require("@opentelemetry/api");
+    import_core8 = require("@opentelemetry/core");
     BatchSpanProcessorBase = /** @class */
     (function() {
       function BatchSpanProcessorBase2(_exporter, config) {
@@ -1228,14 +1228,14 @@ var init_BatchSpanProcessorBase = __esm({
         this._isExporting = false;
         this._finishedSpans = [];
         this._droppedSpansCount = 0;
-        var env = (0, import_core9.getEnv)();
+        var env = (0, import_core8.getEnv)();
         this._maxExportBatchSize = typeof (config === null || config === void 0 ? void 0 : config.maxExportBatchSize) === "number" ? config.maxExportBatchSize : env.OTEL_BSP_MAX_EXPORT_BATCH_SIZE;
         this._maxQueueSize = typeof (config === null || config === void 0 ? void 0 : config.maxQueueSize) === "number" ? config.maxQueueSize : env.OTEL_BSP_MAX_QUEUE_SIZE;
         this._scheduledDelayMillis = typeof (config === null || config === void 0 ? void 0 : config.scheduledDelayMillis) === "number" ? config.scheduledDelayMillis : env.OTEL_BSP_SCHEDULE_DELAY;
         this._exportTimeoutMillis = typeof (config === null || config === void 0 ? void 0 : config.exportTimeoutMillis) === "number" ? config.exportTimeoutMillis : env.OTEL_BSP_EXPORT_TIMEOUT;
-        this._shutdownOnce = new import_core9.BindOnceFuture(this._shutdown, this);
+        this._shutdownOnce = new import_core8.BindOnceFuture(this._shutdown, this);
         if (this._maxExportBatchSize > this._maxQueueSize) {
-          import_api14.diag.warn("BatchSpanProcessor: maxExportBatchSize must be smaller or equal to maxQueueSize, setting maxExportBatchSize to match maxQueueSize");
+          import_api11.diag.warn("BatchSpanProcessor: maxExportBatchSize must be smaller or equal to maxQueueSize, setting maxExportBatchSize to match maxQueueSize");
           this._maxExportBatchSize = this._maxQueueSize;
         }
       }
@@ -1251,7 +1251,7 @@ var init_BatchSpanProcessorBase = __esm({
         if (this._shutdownOnce.isCalled) {
           return;
         }
-        if ((span.spanContext().traceFlags & import_api14.TraceFlags.SAMPLED) === 0) {
+        if ((span.spanContext().traceFlags & import_api11.TraceFlags.SAMPLED) === 0) {
           return;
         }
         this._addToBuffer(span);
@@ -1272,13 +1272,13 @@ var init_BatchSpanProcessorBase = __esm({
       BatchSpanProcessorBase2.prototype._addToBuffer = function(span) {
         if (this._finishedSpans.length >= this._maxQueueSize) {
           if (this._droppedSpansCount === 0) {
-            import_api14.diag.debug("maxQueueSize reached, dropping spans");
+            import_api11.diag.debug("maxQueueSize reached, dropping spans");
           }
           this._droppedSpansCount++;
           return;
         }
         if (this._droppedSpansCount > 0) {
-          import_api14.diag.warn("Dropped " + this._droppedSpansCount + " spans because maxQueueSize reached");
+          import_api11.diag.warn("Dropped " + this._droppedSpansCount + " spans because maxQueueSize reached");
           this._droppedSpansCount = 0;
         }
         this._finishedSpans.push(span);
@@ -1307,7 +1307,7 @@ var init_BatchSpanProcessorBase = __esm({
           var timer = setTimeout(function() {
             reject(new Error("Timeout"));
           }, _this._exportTimeoutMillis);
-          import_api14.context.with((0, import_core9.suppressTracing)(import_api14.context.active()), function() {
+          import_api11.context.with((0, import_core8.suppressTracing)(import_api11.context.active()), function() {
             var spans;
             if (_this._finishedSpans.length <= _this._maxExportBatchSize) {
               spans = _this._finishedSpans;
@@ -1319,7 +1319,7 @@ var init_BatchSpanProcessorBase = __esm({
               return _this._exporter.export(spans, function(result) {
                 var _a;
                 clearTimeout(timer);
-                if (result.code === import_core9.ExportResultCode.SUCCESS) {
+                if (result.code === import_core8.ExportResultCode.SUCCESS) {
                   resolve();
                 } else {
                   reject((_a = result.error) !== null && _a !== void 0 ? _a : new Error("BatchSpanProcessor: span export failed"));
@@ -1338,7 +1338,7 @@ var init_BatchSpanProcessorBase = __esm({
               doExport();
             } else {
               Promise.all(pendingResources).then(doExport, function(err) {
-                (0, import_core9.globalErrorHandler)(err);
+                (0, import_core8.globalErrorHandler)(err);
                 reject(err);
               });
             }
@@ -1359,7 +1359,7 @@ var init_BatchSpanProcessorBase = __esm({
             }
           }).catch(function(e) {
             _this._isExporting = false;
-            (0, import_core9.globalErrorHandler)(e);
+            (0, import_core8.globalErrorHandler)(e);
           });
         };
         if (this._finishedSpans.length >= this._maxExportBatchSize) {
@@ -1370,7 +1370,7 @@ var init_BatchSpanProcessorBase = __esm({
         this._timer = setTimeout(function() {
           return flush();
         }, this._scheduledDelayMillis);
-        (0, import_core9.unrefTimer)(this._timer);
+        (0, import_core8.unrefTimer)(this._timer);
       };
       BatchSpanProcessorBase2.prototype._clearTimer = function() {
         if (this._timer !== void 0) {
@@ -1473,18 +1473,18 @@ var init_platform = __esm({
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/build/esm/Tracer.js
-var api, import_core10, Tracer;
+var api, import_core9, Tracer;
 var init_Tracer = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/build/esm/Tracer.js"() {
     "use strict";
     api = __toESM(require("@opentelemetry/api"));
-    import_core10 = require("@opentelemetry/core");
+    import_core9 = require("@opentelemetry/core");
     init_Span();
     init_utility();
     init_platform();
     Tracer = /** @class */
     (function() {
-      function Tracer2(instrumentationLibrary, config, _tracerProvider) {
+      function Tracer4(instrumentationLibrary, config, _tracerProvider) {
         this._tracerProvider = _tracerProvider;
         var localConfig = mergeConfig(config);
         this._sampler = localConfig.sampler;
@@ -1494,7 +1494,7 @@ var init_Tracer = __esm({
         this.resource = _tracerProvider.resource;
         this.instrumentationLibrary = instrumentationLibrary;
       }
-      Tracer2.prototype.startSpan = function(name, options, context8) {
+      Tracer4.prototype.startSpan = function(name, options, context8) {
         var _a, _b, _c;
         if (options === void 0) {
           options = {};
@@ -1506,7 +1506,7 @@ var init_Tracer = __esm({
           context8 = api.trace.deleteSpan(context8);
         }
         var parentSpan = api.trace.getSpan(context8);
-        if ((0, import_core10.isTracingSuppressed)(context8)) {
+        if ((0, import_core9.isTracingSuppressed)(context8)) {
           api.diag.debug("Instrumentation suppressed, returning Noop Span");
           var nonRecordingSpan = api.trace.wrapSpanContext(api.INVALID_SPAN_CONTEXT);
           return nonRecordingSpan;
@@ -1527,10 +1527,10 @@ var init_Tracer = __esm({
         var links = ((_b = options.links) !== null && _b !== void 0 ? _b : []).map(function(link) {
           return {
             context: link.context,
-            attributes: (0, import_core10.sanitizeAttributes)(link.attributes)
+            attributes: (0, import_core9.sanitizeAttributes)(link.attributes)
           };
         });
-        var attributes = (0, import_core10.sanitizeAttributes)(options.attributes);
+        var attributes = (0, import_core9.sanitizeAttributes)(options.attributes);
         var samplingResult = this._sampler.shouldSample(context8, traceId, name, spanKind, attributes, links);
         traceState = (_c = samplingResult.traceState) !== null && _c !== void 0 ? _c : traceState;
         var traceFlags = samplingResult.decision === api.SamplingDecision.RECORD_AND_SAMPLED ? api.TraceFlags.SAMPLED : api.TraceFlags.NONE;
@@ -1540,11 +1540,11 @@ var init_Tracer = __esm({
           var nonRecordingSpan = api.trace.wrapSpanContext(spanContext);
           return nonRecordingSpan;
         }
-        var initAttributes = (0, import_core10.sanitizeAttributes)(Object.assign(attributes, samplingResult.attributes));
+        var initAttributes = (0, import_core9.sanitizeAttributes)(Object.assign(attributes, samplingResult.attributes));
         var span = new Span2(this, context8, name, spanContext, spanKind, parentSpanId, links, options.startTime, void 0, initAttributes);
         return span;
       };
-      Tracer2.prototype.startActiveSpan = function(name, arg2, arg3, arg4) {
+      Tracer4.prototype.startActiveSpan = function(name, arg2, arg3, arg4) {
         var opts;
         var ctx;
         var fn;
@@ -1565,22 +1565,22 @@ var init_Tracer = __esm({
         var contextWithSpanSet = api.trace.setSpan(parentContext, span);
         return api.context.with(contextWithSpanSet, fn, void 0, span);
       };
-      Tracer2.prototype.getGeneralLimits = function() {
+      Tracer4.prototype.getGeneralLimits = function() {
         return this._generalLimits;
       };
-      Tracer2.prototype.getSpanLimits = function() {
+      Tracer4.prototype.getSpanLimits = function() {
         return this._spanLimits;
       };
-      Tracer2.prototype.getActiveSpanProcessor = function() {
+      Tracer4.prototype.getActiveSpanProcessor = function() {
         return this._tracerProvider.getActiveSpanProcessor();
       };
-      return Tracer2;
+      return Tracer4;
     })();
   }
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/platform/node/default-service-name.js
-function defaultServiceName2() {
+function defaultServiceName() {
   return "unknown_service:" + process.argv0;
 }
 var init_default_service_name = __esm({
@@ -1606,16 +1606,16 @@ var init_platform2 = __esm({
 });
 
 // node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/Resource.js
-var import_api15, import_semantic_conventions3, import_core11, __assign3, __awaiter2, __generator2, __read4, Resource2;
+var import_api12, import_semantic_conventions2, import_core10, __assign2, __awaiter, __generator, __read3, Resource;
 var init_Resource = __esm({
   "node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/Resource.js"() {
     "use strict";
-    import_api15 = require("@opentelemetry/api");
-    import_semantic_conventions3 = require("@opentelemetry/semantic-conventions");
-    import_core11 = require("@opentelemetry/core");
+    import_api12 = require("@opentelemetry/api");
+    import_semantic_conventions2 = require("@opentelemetry/semantic-conventions");
+    import_core10 = require("@opentelemetry/core");
     init_platform2();
-    __assign3 = function() {
-      __assign3 = Object.assign || function(t) {
+    __assign2 = function() {
+      __assign2 = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
           s = arguments[i];
           for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1623,8 +1623,704 @@ var init_Resource = __esm({
         }
         return t;
       };
-      return __assign3.apply(this, arguments);
+      return __assign2.apply(this, arguments);
     };
+    __awaiter = function(thisArg, _arguments, P, generator) {
+      function adopt(value) {
+        return value instanceof P ? value : new P(function(resolve) {
+          resolve(value);
+        });
+      }
+      return new (P || (P = Promise))(function(resolve, reject) {
+        function fulfilled(value) {
+          try {
+            step(generator.next(value));
+          } catch (e) {
+            reject(e);
+          }
+        }
+        function rejected(value) {
+          try {
+            step(generator["throw"](value));
+          } catch (e) {
+            reject(e);
+          }
+        }
+        function step(result) {
+          result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+      });
+    };
+    __generator = function(thisArg, body) {
+      var _ = { label: 0, sent: function() {
+        if (t[0] & 1) throw t[1];
+        return t[1];
+      }, trys: [], ops: [] }, f, y, t, g;
+      return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+        return this;
+      }), g;
+      function verb(n) {
+        return function(v) {
+          return step([n, v]);
+        };
+      }
+      function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+          if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+          if (y = 0, t) op = [op[0] & 2, t.value];
+          switch (op[0]) {
+            case 0:
+            case 1:
+              t = op;
+              break;
+            case 4:
+              _.label++;
+              return { value: op[1], done: false };
+            case 5:
+              _.label++;
+              y = op[1];
+              op = [0];
+              continue;
+            case 7:
+              op = _.ops.pop();
+              _.trys.pop();
+              continue;
+            default:
+              if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                _ = 0;
+                continue;
+              }
+              if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                _.label = op[1];
+                break;
+              }
+              if (op[0] === 6 && _.label < t[1]) {
+                _.label = t[1];
+                t = op;
+                break;
+              }
+              if (t && _.label < t[2]) {
+                _.label = t[2];
+                _.ops.push(op);
+                break;
+              }
+              if (t[2]) _.ops.pop();
+              _.trys.pop();
+              continue;
+          }
+          op = body.call(thisArg, _);
+        } catch (e) {
+          op = [6, e];
+          y = 0;
+        } finally {
+          f = t = 0;
+        }
+        if (op[0] & 5) throw op[1];
+        return { value: op[0] ? op[1] : void 0, done: true };
+      }
+    };
+    __read3 = function(o, n) {
+      var m = typeof Symbol === "function" && o[Symbol.iterator];
+      if (!m) return o;
+      var i = m.call(o), r, ar = [], e;
+      try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+      } catch (error) {
+        e = { error };
+      } finally {
+        try {
+          if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+          if (e) throw e.error;
+        }
+      }
+      return ar;
+    };
+    Resource = /** @class */
+    (function() {
+      function Resource3(attributes, asyncAttributesPromise) {
+        var _this = this;
+        var _a;
+        this._attributes = attributes;
+        this.asyncAttributesPending = asyncAttributesPromise != null;
+        this._syncAttributes = (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
+        this._asyncAttributesPromise = asyncAttributesPromise === null || asyncAttributesPromise === void 0 ? void 0 : asyncAttributesPromise.then(function(asyncAttributes) {
+          _this._attributes = Object.assign({}, _this._attributes, asyncAttributes);
+          _this.asyncAttributesPending = false;
+          return asyncAttributes;
+        }, function(err) {
+          import_api12.diag.debug("a resource's async attributes promise rejected: %s", err);
+          _this.asyncAttributesPending = false;
+          return {};
+        });
+      }
+      Resource3.empty = function() {
+        return Resource3.EMPTY;
+      };
+      Resource3.default = function() {
+        var _a;
+        return new Resource3((_a = {}, _a[import_semantic_conventions2.SEMRESATTRS_SERVICE_NAME] = defaultServiceName(), _a[import_semantic_conventions2.SEMRESATTRS_TELEMETRY_SDK_LANGUAGE] = import_core10.SDK_INFO[import_semantic_conventions2.SEMRESATTRS_TELEMETRY_SDK_LANGUAGE], _a[import_semantic_conventions2.SEMRESATTRS_TELEMETRY_SDK_NAME] = import_core10.SDK_INFO[import_semantic_conventions2.SEMRESATTRS_TELEMETRY_SDK_NAME], _a[import_semantic_conventions2.SEMRESATTRS_TELEMETRY_SDK_VERSION] = import_core10.SDK_INFO[import_semantic_conventions2.SEMRESATTRS_TELEMETRY_SDK_VERSION], _a));
+      };
+      Object.defineProperty(Resource3.prototype, "attributes", {
+        get: function() {
+          var _a;
+          if (this.asyncAttributesPending) {
+            import_api12.diag.error("Accessing resource attributes before async attributes settled");
+          }
+          return (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
+        },
+        enumerable: false,
+        configurable: true
+      });
+      Resource3.prototype.waitForAsyncAttributes = function() {
+        return __awaiter(this, void 0, void 0, function() {
+          return __generator(this, function(_a) {
+            switch (_a.label) {
+              case 0:
+                if (!this.asyncAttributesPending) return [3, 2];
+                return [4, this._asyncAttributesPromise];
+              case 1:
+                _a.sent();
+                _a.label = 2;
+              case 2:
+                return [
+                  2
+                  /*return*/
+                ];
+            }
+          });
+        });
+      };
+      Resource3.prototype.merge = function(other) {
+        var _this = this;
+        var _a;
+        if (!other)
+          return this;
+        var mergedSyncAttributes = __assign2(__assign2({}, this._syncAttributes), (_a = other._syncAttributes) !== null && _a !== void 0 ? _a : other.attributes);
+        if (!this._asyncAttributesPromise && !other._asyncAttributesPromise) {
+          return new Resource3(mergedSyncAttributes);
+        }
+        var mergedAttributesPromise = Promise.all([
+          this._asyncAttributesPromise,
+          other._asyncAttributesPromise
+        ]).then(function(_a2) {
+          var _b;
+          var _c = __read3(_a2, 2), thisAsyncAttributes = _c[0], otherAsyncAttributes = _c[1];
+          return __assign2(__assign2(__assign2(__assign2({}, _this._syncAttributes), thisAsyncAttributes), (_b = other._syncAttributes) !== null && _b !== void 0 ? _b : other.attributes), otherAsyncAttributes);
+        });
+        return new Resource3(mergedSyncAttributes, mergedAttributesPromise);
+      };
+      Resource3.EMPTY = new Resource3({});
+      return Resource3;
+    })();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/index.js
+var init_esm2 = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/index.js"() {
+    "use strict";
+    init_Resource();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/build/esm/MultiSpanProcessor.js
+var import_core11, __values2, MultiSpanProcessor;
+var init_MultiSpanProcessor = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/build/esm/MultiSpanProcessor.js"() {
+    "use strict";
+    import_core11 = require("@opentelemetry/core");
+    __values2 = function(o) {
+      var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+      if (m) return m.call(o);
+      if (o && typeof o.length === "number") return {
+        next: function() {
+          if (o && i >= o.length) o = void 0;
+          return { value: o && o[i++], done: !o };
+        }
+      };
+      throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    };
+    MultiSpanProcessor = /** @class */
+    (function() {
+      function MultiSpanProcessor2(_spanProcessors) {
+        this._spanProcessors = _spanProcessors;
+      }
+      MultiSpanProcessor2.prototype.forceFlush = function() {
+        var e_1, _a;
+        var promises = [];
+        try {
+          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var spanProcessor = _c.value;
+            promises.push(spanProcessor.forceFlush());
+          }
+        } catch (e_1_1) {
+          e_1 = { error: e_1_1 };
+        } finally {
+          try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+          } finally {
+            if (e_1) throw e_1.error;
+          }
+        }
+        return new Promise(function(resolve) {
+          Promise.all(promises).then(function() {
+            resolve();
+          }).catch(function(error) {
+            (0, import_core11.globalErrorHandler)(error || new Error("MultiSpanProcessor: forceFlush failed"));
+            resolve();
+          });
+        });
+      };
+      MultiSpanProcessor2.prototype.onStart = function(span, context8) {
+        var e_2, _a;
+        try {
+          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var spanProcessor = _c.value;
+            spanProcessor.onStart(span, context8);
+          }
+        } catch (e_2_1) {
+          e_2 = { error: e_2_1 };
+        } finally {
+          try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+          } finally {
+            if (e_2) throw e_2.error;
+          }
+        }
+      };
+      MultiSpanProcessor2.prototype.onEnd = function(span) {
+        var e_3, _a;
+        try {
+          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var spanProcessor = _c.value;
+            spanProcessor.onEnd(span);
+          }
+        } catch (e_3_1) {
+          e_3 = { error: e_3_1 };
+        } finally {
+          try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+          } finally {
+            if (e_3) throw e_3.error;
+          }
+        }
+      };
+      MultiSpanProcessor2.prototype.shutdown = function() {
+        var e_4, _a;
+        var promises = [];
+        try {
+          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
+            var spanProcessor = _c.value;
+            promises.push(spanProcessor.shutdown());
+          }
+        } catch (e_4_1) {
+          e_4 = { error: e_4_1 };
+        } finally {
+          try {
+            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+          } finally {
+            if (e_4) throw e_4.error;
+          }
+        }
+        return new Promise(function(resolve, reject) {
+          Promise.all(promises).then(function() {
+            resolve();
+          }, reject);
+        });
+      };
+      return MultiSpanProcessor2;
+    })();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/NoopSpanProcessor.js
+var NoopSpanProcessor;
+var init_NoopSpanProcessor = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/NoopSpanProcessor.js"() {
+    "use strict";
+    NoopSpanProcessor = /** @class */
+    (function() {
+      function NoopSpanProcessor2() {
+      }
+      NoopSpanProcessor2.prototype.onStart = function(_span, _context) {
+      };
+      NoopSpanProcessor2.prototype.onEnd = function(_span) {
+      };
+      NoopSpanProcessor2.prototype.shutdown = function() {
+        return Promise.resolve();
+      };
+      NoopSpanProcessor2.prototype.forceFlush = function() {
+        return Promise.resolve();
+      };
+      return NoopSpanProcessor2;
+    })();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/build/esm/BasicTracerProvider.js
+var import_api13, import_core12, __read4, __spreadArray2, ForceFlushState, BasicTracerProvider;
+var init_BasicTracerProvider = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/build/esm/BasicTracerProvider.js"() {
+    "use strict";
+    import_api13 = require("@opentelemetry/api");
+    import_core12 = require("@opentelemetry/core");
+    init_esm2();
+    init_Tracer();
+    init_config();
+    init_MultiSpanProcessor();
+    init_NoopSpanProcessor();
+    init_platform();
+    init_utility();
+    __read4 = function(o, n) {
+      var m = typeof Symbol === "function" && o[Symbol.iterator];
+      if (!m) return o;
+      var i = m.call(o), r, ar = [], e;
+      try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+      } catch (error) {
+        e = { error };
+      } finally {
+        try {
+          if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+          if (e) throw e.error;
+        }
+      }
+      return ar;
+    };
+    __spreadArray2 = function(to, from, pack) {
+      if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+          ar[i] = from[i];
+        }
+      }
+      return to.concat(ar || Array.prototype.slice.call(from));
+    };
+    (function(ForceFlushState2) {
+      ForceFlushState2[ForceFlushState2["resolved"] = 0] = "resolved";
+      ForceFlushState2[ForceFlushState2["timeout"] = 1] = "timeout";
+      ForceFlushState2[ForceFlushState2["error"] = 2] = "error";
+      ForceFlushState2[ForceFlushState2["unresolved"] = 3] = "unresolved";
+    })(ForceFlushState || (ForceFlushState = {}));
+    BasicTracerProvider = /** @class */
+    (function() {
+      function BasicTracerProvider2(config) {
+        if (config === void 0) {
+          config = {};
+        }
+        var _a, _b;
+        this._registeredSpanProcessors = [];
+        this._tracers = /* @__PURE__ */ new Map();
+        var mergedConfig = (0, import_core12.merge)({}, loadDefaultConfig(), reconfigureLimits(config));
+        this.resource = (_a = mergedConfig.resource) !== null && _a !== void 0 ? _a : Resource.empty();
+        if (mergedConfig.mergeResourceWithDefaults) {
+          this.resource = Resource.default().merge(this.resource);
+        }
+        this._config = Object.assign({}, mergedConfig, {
+          resource: this.resource
+        });
+        if ((_b = config.spanProcessors) === null || _b === void 0 ? void 0 : _b.length) {
+          this._registeredSpanProcessors = __spreadArray2([], __read4(config.spanProcessors), false);
+          this.activeSpanProcessor = new MultiSpanProcessor(this._registeredSpanProcessors);
+        } else {
+          var defaultExporter = this._buildExporterFromEnv();
+          if (defaultExporter !== void 0) {
+            var batchProcessor = new BatchSpanProcessor(defaultExporter);
+            this.activeSpanProcessor = batchProcessor;
+          } else {
+            this.activeSpanProcessor = new NoopSpanProcessor();
+          }
+        }
+      }
+      BasicTracerProvider2.prototype.getTracer = function(name, version, options) {
+        var key = name + "@" + (version || "") + ":" + ((options === null || options === void 0 ? void 0 : options.schemaUrl) || "");
+        if (!this._tracers.has(key)) {
+          this._tracers.set(key, new Tracer({ name, version, schemaUrl: options === null || options === void 0 ? void 0 : options.schemaUrl }, this._config, this));
+        }
+        return this._tracers.get(key);
+      };
+      BasicTracerProvider2.prototype.addSpanProcessor = function(spanProcessor) {
+        if (this._registeredSpanProcessors.length === 0) {
+          this.activeSpanProcessor.shutdown().catch(function(err) {
+            return import_api13.diag.error("Error while trying to shutdown current span processor", err);
+          });
+        }
+        this._registeredSpanProcessors.push(spanProcessor);
+        this.activeSpanProcessor = new MultiSpanProcessor(this._registeredSpanProcessors);
+      };
+      BasicTracerProvider2.prototype.getActiveSpanProcessor = function() {
+        return this.activeSpanProcessor;
+      };
+      BasicTracerProvider2.prototype.register = function(config) {
+        if (config === void 0) {
+          config = {};
+        }
+        import_api13.trace.setGlobalTracerProvider(this);
+        if (config.propagator === void 0) {
+          config.propagator = this._buildPropagatorFromEnv();
+        }
+        if (config.contextManager) {
+          import_api13.context.setGlobalContextManager(config.contextManager);
+        }
+        if (config.propagator) {
+          import_api13.propagation.setGlobalPropagator(config.propagator);
+        }
+      };
+      BasicTracerProvider2.prototype.forceFlush = function() {
+        var timeout = this._config.forceFlushTimeoutMillis;
+        var promises = this._registeredSpanProcessors.map(function(spanProcessor) {
+          return new Promise(function(resolve) {
+            var state;
+            var timeoutInterval = setTimeout(function() {
+              resolve(new Error("Span processor did not completed within timeout period of " + timeout + " ms"));
+              state = ForceFlushState.timeout;
+            }, timeout);
+            spanProcessor.forceFlush().then(function() {
+              clearTimeout(timeoutInterval);
+              if (state !== ForceFlushState.timeout) {
+                state = ForceFlushState.resolved;
+                resolve(state);
+              }
+            }).catch(function(error) {
+              clearTimeout(timeoutInterval);
+              state = ForceFlushState.error;
+              resolve(error);
+            });
+          });
+        });
+        return new Promise(function(resolve, reject) {
+          Promise.all(promises).then(function(results) {
+            var errors = results.filter(function(result) {
+              return result !== ForceFlushState.resolved;
+            });
+            if (errors.length > 0) {
+              reject(errors);
+            } else {
+              resolve();
+            }
+          }).catch(function(error) {
+            return reject([error]);
+          });
+        });
+      };
+      BasicTracerProvider2.prototype.shutdown = function() {
+        return this.activeSpanProcessor.shutdown();
+      };
+      BasicTracerProvider2.prototype._getPropagator = function(name) {
+        var _a;
+        return (_a = this.constructor._registeredPropagators.get(name)) === null || _a === void 0 ? void 0 : _a();
+      };
+      BasicTracerProvider2.prototype._getSpanExporter = function(name) {
+        var _a;
+        return (_a = this.constructor._registeredExporters.get(name)) === null || _a === void 0 ? void 0 : _a();
+      };
+      BasicTracerProvider2.prototype._buildPropagatorFromEnv = function() {
+        var _this = this;
+        var uniquePropagatorNames = Array.from(new Set((0, import_core12.getEnv)().OTEL_PROPAGATORS));
+        var propagators = uniquePropagatorNames.map(function(name) {
+          var propagator = _this._getPropagator(name);
+          if (!propagator) {
+            import_api13.diag.warn('Propagator "' + name + '" requested through environment variable is unavailable.');
+          }
+          return propagator;
+        });
+        var validPropagators = propagators.reduce(function(list, item) {
+          if (item) {
+            list.push(item);
+          }
+          return list;
+        }, []);
+        if (validPropagators.length === 0) {
+          return;
+        } else if (uniquePropagatorNames.length === 1) {
+          return validPropagators[0];
+        } else {
+          return new import_core12.CompositePropagator({
+            propagators: validPropagators
+          });
+        }
+      };
+      BasicTracerProvider2.prototype._buildExporterFromEnv = function() {
+        var exporterName = (0, import_core12.getEnv)().OTEL_TRACES_EXPORTER;
+        if (exporterName === "none" || exporterName === "")
+          return;
+        var exporter = this._getSpanExporter(exporterName);
+        if (!exporter) {
+          import_api13.diag.error('Exporter "' + exporterName + '" requested through environment variable is unavailable.');
+        }
+        return exporter;
+      };
+      BasicTracerProvider2._registeredPropagators = /* @__PURE__ */ new Map([
+        ["tracecontext", function() {
+          return new import_core12.W3CTraceContextPropagator();
+        }],
+        ["baggage", function() {
+          return new import_core12.W3CBaggagePropagator();
+        }]
+      ]);
+      BasicTracerProvider2._registeredExporters = /* @__PURE__ */ new Map();
+      return BasicTracerProvider2;
+    })();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/ConsoleSpanExporter.js
+var import_core13, __values3, ConsoleSpanExporter;
+var init_ConsoleSpanExporter = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/ConsoleSpanExporter.js"() {
+    "use strict";
+    import_core13 = require("@opentelemetry/core");
+    __values3 = function(o) {
+      var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+      if (m) return m.call(o);
+      if (o && typeof o.length === "number") return {
+        next: function() {
+          if (o && i >= o.length) o = void 0;
+          return { value: o && o[i++], done: !o };
+        }
+      };
+      throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    };
+    ConsoleSpanExporter = /** @class */
+    (function() {
+      function ConsoleSpanExporter2() {
+      }
+      ConsoleSpanExporter2.prototype.export = function(spans, resultCallback) {
+        return this._sendSpans(spans, resultCallback);
+      };
+      ConsoleSpanExporter2.prototype.shutdown = function() {
+        this._sendSpans([]);
+        return this.forceFlush();
+      };
+      ConsoleSpanExporter2.prototype.forceFlush = function() {
+        return Promise.resolve();
+      };
+      ConsoleSpanExporter2.prototype._exportInfo = function(span) {
+        var _a;
+        return {
+          resource: {
+            attributes: span.resource.attributes
+          },
+          instrumentationScope: span.instrumentationLibrary,
+          traceId: span.spanContext().traceId,
+          parentId: span.parentSpanId,
+          traceState: (_a = span.spanContext().traceState) === null || _a === void 0 ? void 0 : _a.serialize(),
+          name: span.name,
+          id: span.spanContext().spanId,
+          kind: span.kind,
+          timestamp: (0, import_core13.hrTimeToMicroseconds)(span.startTime),
+          duration: (0, import_core13.hrTimeToMicroseconds)(span.duration),
+          attributes: span.attributes,
+          status: span.status,
+          events: span.events,
+          links: span.links
+        };
+      };
+      ConsoleSpanExporter2.prototype._sendSpans = function(spans, done) {
+        var e_1, _a;
+        try {
+          for (var spans_1 = __values3(spans), spans_1_1 = spans_1.next(); !spans_1_1.done; spans_1_1 = spans_1.next()) {
+            var span = spans_1_1.value;
+            console.dir(this._exportInfo(span), { depth: 3 });
+          }
+        } catch (e_1_1) {
+          e_1 = { error: e_1_1 };
+        } finally {
+          try {
+            if (spans_1_1 && !spans_1_1.done && (_a = spans_1.return)) _a.call(spans_1);
+          } finally {
+            if (e_1) throw e_1.error;
+          }
+        }
+        if (done) {
+          return done({ code: import_core13.ExportResultCode.SUCCESS });
+        }
+      };
+      return ConsoleSpanExporter2;
+    })();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/InMemorySpanExporter.js
+var import_core14, __read5, __spreadArray3, InMemorySpanExporter;
+var init_InMemorySpanExporter = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/InMemorySpanExporter.js"() {
+    "use strict";
+    import_core14 = require("@opentelemetry/core");
+    __read5 = function(o, n) {
+      var m = typeof Symbol === "function" && o[Symbol.iterator];
+      if (!m) return o;
+      var i = m.call(o), r, ar = [], e;
+      try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+      } catch (error) {
+        e = { error };
+      } finally {
+        try {
+          if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+          if (e) throw e.error;
+        }
+      }
+      return ar;
+    };
+    __spreadArray3 = function(to, from, pack) {
+      if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+          ar[i] = from[i];
+        }
+      }
+      return to.concat(ar || Array.prototype.slice.call(from));
+    };
+    InMemorySpanExporter = /** @class */
+    (function() {
+      function InMemorySpanExporter2() {
+        this._finishedSpans = [];
+        this._stopped = false;
+      }
+      InMemorySpanExporter2.prototype.export = function(spans, resultCallback) {
+        var _a;
+        if (this._stopped)
+          return resultCallback({
+            code: import_core14.ExportResultCode.FAILED,
+            error: new Error("Exporter has been stopped")
+          });
+        (_a = this._finishedSpans).push.apply(_a, __spreadArray3([], __read5(spans), false));
+        setTimeout(function() {
+          return resultCallback({ code: import_core14.ExportResultCode.SUCCESS });
+        }, 0);
+      };
+      InMemorySpanExporter2.prototype.shutdown = function() {
+        this._stopped = true;
+        this._finishedSpans = [];
+        return this.forceFlush();
+      };
+      InMemorySpanExporter2.prototype.forceFlush = function() {
+        return Promise.resolve();
+      };
+      InMemorySpanExporter2.prototype.reset = function() {
+        this._finishedSpans = [];
+      };
+      InMemorySpanExporter2.prototype.getFinishedSpans = function() {
+        return this._finishedSpans;
+      };
+      return InMemorySpanExporter2;
+    })();
+  }
+});
+
+// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/SimpleSpanProcessor.js
+var import_api14, import_core15, __awaiter2, __generator2, SimpleSpanProcessor;
+var init_SimpleSpanProcessor = __esm({
+  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/SimpleSpanProcessor.js"() {
+    "use strict";
+    import_api14 = require("@opentelemetry/api");
+    import_core15 = require("@opentelemetry/core");
     __awaiter2 = function(thisArg, _arguments, P, generator) {
       function adopt(value) {
         return value instanceof P ? value : new P(function(resolve) {
@@ -1721,712 +2417,16 @@ var init_Resource = __esm({
         return { value: op[0] ? op[1] : void 0, done: true };
       }
     };
-    __read4 = function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m) return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"])) m.call(i);
-        } finally {
-          if (e) throw e.error;
-        }
-      }
-      return ar;
-    };
-    Resource2 = /** @class */
-    (function() {
-      function Resource3(attributes, asyncAttributesPromise) {
-        var _this = this;
-        var _a;
-        this._attributes = attributes;
-        this.asyncAttributesPending = asyncAttributesPromise != null;
-        this._syncAttributes = (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
-        this._asyncAttributesPromise = asyncAttributesPromise === null || asyncAttributesPromise === void 0 ? void 0 : asyncAttributesPromise.then(function(asyncAttributes) {
-          _this._attributes = Object.assign({}, _this._attributes, asyncAttributes);
-          _this.asyncAttributesPending = false;
-          return asyncAttributes;
-        }, function(err) {
-          import_api15.diag.debug("a resource's async attributes promise rejected: %s", err);
-          _this.asyncAttributesPending = false;
-          return {};
-        });
-      }
-      Resource3.empty = function() {
-        return Resource3.EMPTY;
-      };
-      Resource3.default = function() {
-        var _a;
-        return new Resource3((_a = {}, _a[import_semantic_conventions3.SEMRESATTRS_SERVICE_NAME] = defaultServiceName2(), _a[import_semantic_conventions3.SEMRESATTRS_TELEMETRY_SDK_LANGUAGE] = import_core11.SDK_INFO[import_semantic_conventions3.SEMRESATTRS_TELEMETRY_SDK_LANGUAGE], _a[import_semantic_conventions3.SEMRESATTRS_TELEMETRY_SDK_NAME] = import_core11.SDK_INFO[import_semantic_conventions3.SEMRESATTRS_TELEMETRY_SDK_NAME], _a[import_semantic_conventions3.SEMRESATTRS_TELEMETRY_SDK_VERSION] = import_core11.SDK_INFO[import_semantic_conventions3.SEMRESATTRS_TELEMETRY_SDK_VERSION], _a));
-      };
-      Object.defineProperty(Resource3.prototype, "attributes", {
-        get: function() {
-          var _a;
-          if (this.asyncAttributesPending) {
-            import_api15.diag.error("Accessing resource attributes before async attributes settled");
-          }
-          return (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
-        },
-        enumerable: false,
-        configurable: true
-      });
-      Resource3.prototype.waitForAsyncAttributes = function() {
-        return __awaiter2(this, void 0, void 0, function() {
-          return __generator2(this, function(_a) {
-            switch (_a.label) {
-              case 0:
-                if (!this.asyncAttributesPending) return [3, 2];
-                return [4, this._asyncAttributesPromise];
-              case 1:
-                _a.sent();
-                _a.label = 2;
-              case 2:
-                return [
-                  2
-                  /*return*/
-                ];
-            }
-          });
-        });
-      };
-      Resource3.prototype.merge = function(other) {
-        var _this = this;
-        var _a;
-        if (!other)
-          return this;
-        var mergedSyncAttributes = __assign3(__assign3({}, this._syncAttributes), (_a = other._syncAttributes) !== null && _a !== void 0 ? _a : other.attributes);
-        if (!this._asyncAttributesPromise && !other._asyncAttributesPromise) {
-          return new Resource3(mergedSyncAttributes);
-        }
-        var mergedAttributesPromise = Promise.all([
-          this._asyncAttributesPromise,
-          other._asyncAttributesPromise
-        ]).then(function(_a2) {
-          var _b;
-          var _c = __read4(_a2, 2), thisAsyncAttributes = _c[0], otherAsyncAttributes = _c[1];
-          return __assign3(__assign3(__assign3(__assign3({}, _this._syncAttributes), thisAsyncAttributes), (_b = other._syncAttributes) !== null && _b !== void 0 ? _b : other.attributes), otherAsyncAttributes);
-        });
-        return new Resource3(mergedSyncAttributes, mergedAttributesPromise);
-      };
-      Resource3.EMPTY = new Resource3({});
-      return Resource3;
-    })();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/index.js
-var init_esm2 = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/node_modules/@opentelemetry/resources/build/esm/index.js"() {
-    "use strict";
-    init_Resource();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/build/esm/MultiSpanProcessor.js
-var import_core12, __values2, MultiSpanProcessor;
-var init_MultiSpanProcessor = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/build/esm/MultiSpanProcessor.js"() {
-    "use strict";
-    import_core12 = require("@opentelemetry/core");
-    __values2 = function(o) {
-      var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-      if (m) return m.call(o);
-      if (o && typeof o.length === "number") return {
-        next: function() {
-          if (o && i >= o.length) o = void 0;
-          return { value: o && o[i++], done: !o };
-        }
-      };
-      throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    };
-    MultiSpanProcessor = /** @class */
-    (function() {
-      function MultiSpanProcessor2(_spanProcessors) {
-        this._spanProcessors = _spanProcessors;
-      }
-      MultiSpanProcessor2.prototype.forceFlush = function() {
-        var e_1, _a;
-        var promises = [];
-        try {
-          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var spanProcessor = _c.value;
-            promises.push(spanProcessor.forceFlush());
-          }
-        } catch (e_1_1) {
-          e_1 = { error: e_1_1 };
-        } finally {
-          try {
-            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-          } finally {
-            if (e_1) throw e_1.error;
-          }
-        }
-        return new Promise(function(resolve) {
-          Promise.all(promises).then(function() {
-            resolve();
-          }).catch(function(error) {
-            (0, import_core12.globalErrorHandler)(error || new Error("MultiSpanProcessor: forceFlush failed"));
-            resolve();
-          });
-        });
-      };
-      MultiSpanProcessor2.prototype.onStart = function(span, context8) {
-        var e_2, _a;
-        try {
-          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var spanProcessor = _c.value;
-            spanProcessor.onStart(span, context8);
-          }
-        } catch (e_2_1) {
-          e_2 = { error: e_2_1 };
-        } finally {
-          try {
-            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-          } finally {
-            if (e_2) throw e_2.error;
-          }
-        }
-      };
-      MultiSpanProcessor2.prototype.onEnd = function(span) {
-        var e_3, _a;
-        try {
-          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var spanProcessor = _c.value;
-            spanProcessor.onEnd(span);
-          }
-        } catch (e_3_1) {
-          e_3 = { error: e_3_1 };
-        } finally {
-          try {
-            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-          } finally {
-            if (e_3) throw e_3.error;
-          }
-        }
-      };
-      MultiSpanProcessor2.prototype.shutdown = function() {
-        var e_4, _a;
-        var promises = [];
-        try {
-          for (var _b = __values2(this._spanProcessors), _c = _b.next(); !_c.done; _c = _b.next()) {
-            var spanProcessor = _c.value;
-            promises.push(spanProcessor.shutdown());
-          }
-        } catch (e_4_1) {
-          e_4 = { error: e_4_1 };
-        } finally {
-          try {
-            if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-          } finally {
-            if (e_4) throw e_4.error;
-          }
-        }
-        return new Promise(function(resolve, reject) {
-          Promise.all(promises).then(function() {
-            resolve();
-          }, reject);
-        });
-      };
-      return MultiSpanProcessor2;
-    })();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/NoopSpanProcessor.js
-var NoopSpanProcessor;
-var init_NoopSpanProcessor = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/NoopSpanProcessor.js"() {
-    "use strict";
-    NoopSpanProcessor = /** @class */
-    (function() {
-      function NoopSpanProcessor2() {
-      }
-      NoopSpanProcessor2.prototype.onStart = function(_span, _context) {
-      };
-      NoopSpanProcessor2.prototype.onEnd = function(_span) {
-      };
-      NoopSpanProcessor2.prototype.shutdown = function() {
-        return Promise.resolve();
-      };
-      NoopSpanProcessor2.prototype.forceFlush = function() {
-        return Promise.resolve();
-      };
-      return NoopSpanProcessor2;
-    })();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/build/esm/BasicTracerProvider.js
-var import_api16, import_core13, __read5, __spreadArray2, ForceFlushState, BasicTracerProvider;
-var init_BasicTracerProvider = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/build/esm/BasicTracerProvider.js"() {
-    "use strict";
-    import_api16 = require("@opentelemetry/api");
-    import_core13 = require("@opentelemetry/core");
-    init_esm2();
-    init_Tracer();
-    init_config();
-    init_MultiSpanProcessor();
-    init_NoopSpanProcessor();
-    init_platform();
-    init_utility();
-    __read5 = function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m) return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"])) m.call(i);
-        } finally {
-          if (e) throw e.error;
-        }
-      }
-      return ar;
-    };
-    __spreadArray2 = function(to, from, pack) {
-      if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-          ar[i] = from[i];
-        }
-      }
-      return to.concat(ar || Array.prototype.slice.call(from));
-    };
-    (function(ForceFlushState2) {
-      ForceFlushState2[ForceFlushState2["resolved"] = 0] = "resolved";
-      ForceFlushState2[ForceFlushState2["timeout"] = 1] = "timeout";
-      ForceFlushState2[ForceFlushState2["error"] = 2] = "error";
-      ForceFlushState2[ForceFlushState2["unresolved"] = 3] = "unresolved";
-    })(ForceFlushState || (ForceFlushState = {}));
-    BasicTracerProvider = /** @class */
-    (function() {
-      function BasicTracerProvider2(config) {
-        if (config === void 0) {
-          config = {};
-        }
-        var _a, _b;
-        this._registeredSpanProcessors = [];
-        this._tracers = /* @__PURE__ */ new Map();
-        var mergedConfig = (0, import_core13.merge)({}, loadDefaultConfig(), reconfigureLimits(config));
-        this.resource = (_a = mergedConfig.resource) !== null && _a !== void 0 ? _a : Resource2.empty();
-        if (mergedConfig.mergeResourceWithDefaults) {
-          this.resource = Resource2.default().merge(this.resource);
-        }
-        this._config = Object.assign({}, mergedConfig, {
-          resource: this.resource
-        });
-        if ((_b = config.spanProcessors) === null || _b === void 0 ? void 0 : _b.length) {
-          this._registeredSpanProcessors = __spreadArray2([], __read5(config.spanProcessors), false);
-          this.activeSpanProcessor = new MultiSpanProcessor(this._registeredSpanProcessors);
-        } else {
-          var defaultExporter = this._buildExporterFromEnv();
-          if (defaultExporter !== void 0) {
-            var batchProcessor = new BatchSpanProcessor(defaultExporter);
-            this.activeSpanProcessor = batchProcessor;
-          } else {
-            this.activeSpanProcessor = new NoopSpanProcessor();
-          }
-        }
-      }
-      BasicTracerProvider2.prototype.getTracer = function(name, version, options) {
-        var key = name + "@" + (version || "") + ":" + ((options === null || options === void 0 ? void 0 : options.schemaUrl) || "");
-        if (!this._tracers.has(key)) {
-          this._tracers.set(key, new Tracer({ name, version, schemaUrl: options === null || options === void 0 ? void 0 : options.schemaUrl }, this._config, this));
-        }
-        return this._tracers.get(key);
-      };
-      BasicTracerProvider2.prototype.addSpanProcessor = function(spanProcessor) {
-        if (this._registeredSpanProcessors.length === 0) {
-          this.activeSpanProcessor.shutdown().catch(function(err) {
-            return import_api16.diag.error("Error while trying to shutdown current span processor", err);
-          });
-        }
-        this._registeredSpanProcessors.push(spanProcessor);
-        this.activeSpanProcessor = new MultiSpanProcessor(this._registeredSpanProcessors);
-      };
-      BasicTracerProvider2.prototype.getActiveSpanProcessor = function() {
-        return this.activeSpanProcessor;
-      };
-      BasicTracerProvider2.prototype.register = function(config) {
-        if (config === void 0) {
-          config = {};
-        }
-        import_api16.trace.setGlobalTracerProvider(this);
-        if (config.propagator === void 0) {
-          config.propagator = this._buildPropagatorFromEnv();
-        }
-        if (config.contextManager) {
-          import_api16.context.setGlobalContextManager(config.contextManager);
-        }
-        if (config.propagator) {
-          import_api16.propagation.setGlobalPropagator(config.propagator);
-        }
-      };
-      BasicTracerProvider2.prototype.forceFlush = function() {
-        var timeout = this._config.forceFlushTimeoutMillis;
-        var promises = this._registeredSpanProcessors.map(function(spanProcessor) {
-          return new Promise(function(resolve) {
-            var state;
-            var timeoutInterval = setTimeout(function() {
-              resolve(new Error("Span processor did not completed within timeout period of " + timeout + " ms"));
-              state = ForceFlushState.timeout;
-            }, timeout);
-            spanProcessor.forceFlush().then(function() {
-              clearTimeout(timeoutInterval);
-              if (state !== ForceFlushState.timeout) {
-                state = ForceFlushState.resolved;
-                resolve(state);
-              }
-            }).catch(function(error) {
-              clearTimeout(timeoutInterval);
-              state = ForceFlushState.error;
-              resolve(error);
-            });
-          });
-        });
-        return new Promise(function(resolve, reject) {
-          Promise.all(promises).then(function(results) {
-            var errors = results.filter(function(result) {
-              return result !== ForceFlushState.resolved;
-            });
-            if (errors.length > 0) {
-              reject(errors);
-            } else {
-              resolve();
-            }
-          }).catch(function(error) {
-            return reject([error]);
-          });
-        });
-      };
-      BasicTracerProvider2.prototype.shutdown = function() {
-        return this.activeSpanProcessor.shutdown();
-      };
-      BasicTracerProvider2.prototype._getPropagator = function(name) {
-        var _a;
-        return (_a = this.constructor._registeredPropagators.get(name)) === null || _a === void 0 ? void 0 : _a();
-      };
-      BasicTracerProvider2.prototype._getSpanExporter = function(name) {
-        var _a;
-        return (_a = this.constructor._registeredExporters.get(name)) === null || _a === void 0 ? void 0 : _a();
-      };
-      BasicTracerProvider2.prototype._buildPropagatorFromEnv = function() {
-        var _this = this;
-        var uniquePropagatorNames = Array.from(new Set((0, import_core13.getEnv)().OTEL_PROPAGATORS));
-        var propagators = uniquePropagatorNames.map(function(name) {
-          var propagator = _this._getPropagator(name);
-          if (!propagator) {
-            import_api16.diag.warn('Propagator "' + name + '" requested through environment variable is unavailable.');
-          }
-          return propagator;
-        });
-        var validPropagators = propagators.reduce(function(list, item) {
-          if (item) {
-            list.push(item);
-          }
-          return list;
-        }, []);
-        if (validPropagators.length === 0) {
-          return;
-        } else if (uniquePropagatorNames.length === 1) {
-          return validPropagators[0];
-        } else {
-          return new import_core13.CompositePropagator({
-            propagators: validPropagators
-          });
-        }
-      };
-      BasicTracerProvider2.prototype._buildExporterFromEnv = function() {
-        var exporterName = (0, import_core13.getEnv)().OTEL_TRACES_EXPORTER;
-        if (exporterName === "none" || exporterName === "")
-          return;
-        var exporter = this._getSpanExporter(exporterName);
-        if (!exporter) {
-          import_api16.diag.error('Exporter "' + exporterName + '" requested through environment variable is unavailable.');
-        }
-        return exporter;
-      };
-      BasicTracerProvider2._registeredPropagators = /* @__PURE__ */ new Map([
-        ["tracecontext", function() {
-          return new import_core13.W3CTraceContextPropagator();
-        }],
-        ["baggage", function() {
-          return new import_core13.W3CBaggagePropagator();
-        }]
-      ]);
-      BasicTracerProvider2._registeredExporters = /* @__PURE__ */ new Map();
-      return BasicTracerProvider2;
-    })();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/ConsoleSpanExporter.js
-var import_core14, __values3, ConsoleSpanExporter;
-var init_ConsoleSpanExporter = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/ConsoleSpanExporter.js"() {
-    "use strict";
-    import_core14 = require("@opentelemetry/core");
-    __values3 = function(o) {
-      var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-      if (m) return m.call(o);
-      if (o && typeof o.length === "number") return {
-        next: function() {
-          if (o && i >= o.length) o = void 0;
-          return { value: o && o[i++], done: !o };
-        }
-      };
-      throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    };
-    ConsoleSpanExporter = /** @class */
-    (function() {
-      function ConsoleSpanExporter2() {
-      }
-      ConsoleSpanExporter2.prototype.export = function(spans, resultCallback) {
-        return this._sendSpans(spans, resultCallback);
-      };
-      ConsoleSpanExporter2.prototype.shutdown = function() {
-        this._sendSpans([]);
-        return this.forceFlush();
-      };
-      ConsoleSpanExporter2.prototype.forceFlush = function() {
-        return Promise.resolve();
-      };
-      ConsoleSpanExporter2.prototype._exportInfo = function(span) {
-        var _a;
-        return {
-          resource: {
-            attributes: span.resource.attributes
-          },
-          instrumentationScope: span.instrumentationLibrary,
-          traceId: span.spanContext().traceId,
-          parentId: span.parentSpanId,
-          traceState: (_a = span.spanContext().traceState) === null || _a === void 0 ? void 0 : _a.serialize(),
-          name: span.name,
-          id: span.spanContext().spanId,
-          kind: span.kind,
-          timestamp: (0, import_core14.hrTimeToMicroseconds)(span.startTime),
-          duration: (0, import_core14.hrTimeToMicroseconds)(span.duration),
-          attributes: span.attributes,
-          status: span.status,
-          events: span.events,
-          links: span.links
-        };
-      };
-      ConsoleSpanExporter2.prototype._sendSpans = function(spans, done) {
-        var e_1, _a;
-        try {
-          for (var spans_1 = __values3(spans), spans_1_1 = spans_1.next(); !spans_1_1.done; spans_1_1 = spans_1.next()) {
-            var span = spans_1_1.value;
-            console.dir(this._exportInfo(span), { depth: 3 });
-          }
-        } catch (e_1_1) {
-          e_1 = { error: e_1_1 };
-        } finally {
-          try {
-            if (spans_1_1 && !spans_1_1.done && (_a = spans_1.return)) _a.call(spans_1);
-          } finally {
-            if (e_1) throw e_1.error;
-          }
-        }
-        if (done) {
-          return done({ code: import_core14.ExportResultCode.SUCCESS });
-        }
-      };
-      return ConsoleSpanExporter2;
-    })();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/InMemorySpanExporter.js
-var import_core15, __read6, __spreadArray3, InMemorySpanExporter;
-var init_InMemorySpanExporter = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/InMemorySpanExporter.js"() {
-    "use strict";
-    import_core15 = require("@opentelemetry/core");
-    __read6 = function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m) return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"])) m.call(i);
-        } finally {
-          if (e) throw e.error;
-        }
-      }
-      return ar;
-    };
-    __spreadArray3 = function(to, from, pack) {
-      if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-          ar[i] = from[i];
-        }
-      }
-      return to.concat(ar || Array.prototype.slice.call(from));
-    };
-    InMemorySpanExporter = /** @class */
-    (function() {
-      function InMemorySpanExporter2() {
-        this._finishedSpans = [];
-        this._stopped = false;
-      }
-      InMemorySpanExporter2.prototype.export = function(spans, resultCallback) {
-        var _a;
-        if (this._stopped)
-          return resultCallback({
-            code: import_core15.ExportResultCode.FAILED,
-            error: new Error("Exporter has been stopped")
-          });
-        (_a = this._finishedSpans).push.apply(_a, __spreadArray3([], __read6(spans), false));
-        setTimeout(function() {
-          return resultCallback({ code: import_core15.ExportResultCode.SUCCESS });
-        }, 0);
-      };
-      InMemorySpanExporter2.prototype.shutdown = function() {
-        this._stopped = true;
-        this._finishedSpans = [];
-        return this.forceFlush();
-      };
-      InMemorySpanExporter2.prototype.forceFlush = function() {
-        return Promise.resolve();
-      };
-      InMemorySpanExporter2.prototype.reset = function() {
-        this._finishedSpans = [];
-      };
-      InMemorySpanExporter2.prototype.getFinishedSpans = function() {
-        return this._finishedSpans;
-      };
-      return InMemorySpanExporter2;
-    })();
-  }
-});
-
-// node_modules/@opentelemetry/sdk-trace-base/build/esm/export/SimpleSpanProcessor.js
-var import_api17, import_core16, __awaiter3, __generator3, SimpleSpanProcessor;
-var init_SimpleSpanProcessor = __esm({
-  "node_modules/@opentelemetry/sdk-trace-base/build/esm/export/SimpleSpanProcessor.js"() {
-    "use strict";
-    import_api17 = require("@opentelemetry/api");
-    import_core16 = require("@opentelemetry/core");
-    __awaiter3 = function(thisArg, _arguments, P, generator) {
-      function adopt(value) {
-        return value instanceof P ? value : new P(function(resolve) {
-          resolve(value);
-        });
-      }
-      return new (P || (P = Promise))(function(resolve, reject) {
-        function fulfilled(value) {
-          try {
-            step(generator.next(value));
-          } catch (e) {
-            reject(e);
-          }
-        }
-        function rejected(value) {
-          try {
-            step(generator["throw"](value));
-          } catch (e) {
-            reject(e);
-          }
-        }
-        function step(result) {
-          result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-        }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-      });
-    };
-    __generator3 = function(thisArg, body) {
-      var _ = { label: 0, sent: function() {
-        if (t[0] & 1) throw t[1];
-        return t[1];
-      }, trys: [], ops: [] }, f, y, t, g;
-      return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
-        return this;
-      }), g;
-      function verb(n) {
-        return function(v) {
-          return step([n, v]);
-        };
-      }
-      function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-          if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-          if (y = 0, t) op = [op[0] & 2, t.value];
-          switch (op[0]) {
-            case 0:
-            case 1:
-              t = op;
-              break;
-            case 4:
-              _.label++;
-              return { value: op[1], done: false };
-            case 5:
-              _.label++;
-              y = op[1];
-              op = [0];
-              continue;
-            case 7:
-              op = _.ops.pop();
-              _.trys.pop();
-              continue;
-            default:
-              if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-                _ = 0;
-                continue;
-              }
-              if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-                _.label = op[1];
-                break;
-              }
-              if (op[0] === 6 && _.label < t[1]) {
-                _.label = t[1];
-                t = op;
-                break;
-              }
-              if (t && _.label < t[2]) {
-                _.label = t[2];
-                _.ops.push(op);
-                break;
-              }
-              if (t[2]) _.ops.pop();
-              _.trys.pop();
-              continue;
-          }
-          op = body.call(thisArg, _);
-        } catch (e) {
-          op = [6, e];
-          y = 0;
-        } finally {
-          f = t = 0;
-        }
-        if (op[0] & 5) throw op[1];
-        return { value: op[0] ? op[1] : void 0, done: true };
-      }
-    };
     SimpleSpanProcessor = /** @class */
     (function() {
       function SimpleSpanProcessor3(_exporter) {
         this._exporter = _exporter;
-        this._shutdownOnce = new import_core16.BindOnceFuture(this._shutdown, this);
+        this._shutdownOnce = new import_core15.BindOnceFuture(this._shutdown, this);
         this._unresolvedExports = /* @__PURE__ */ new Set();
       }
       SimpleSpanProcessor3.prototype.forceFlush = function() {
-        return __awaiter3(this, void 0, void 0, function() {
-          return __generator3(this, function(_a) {
+        return __awaiter2(this, void 0, void 0, function() {
+          return __generator2(this, function(_a) {
             switch (_a.label) {
               case 0:
                 return [4, Promise.all(Array.from(this._unresolvedExports))];
@@ -2454,17 +2454,17 @@ var init_SimpleSpanProcessor = __esm({
         if (this._shutdownOnce.isCalled) {
           return;
         }
-        if ((span.spanContext().traceFlags & import_api17.TraceFlags.SAMPLED) === 0) {
+        if ((span.spanContext().traceFlags & import_api14.TraceFlags.SAMPLED) === 0) {
           return;
         }
         var doExport = function() {
-          return import_core16.internal._export(_this._exporter, [span]).then(function(result) {
+          return import_core15.internal._export(_this._exporter, [span]).then(function(result) {
             var _a2;
-            if (result.code !== import_core16.ExportResultCode.SUCCESS) {
-              (0, import_core16.globalErrorHandler)((_a2 = result.error) !== null && _a2 !== void 0 ? _a2 : new Error("SimpleSpanProcessor: span export failed (status " + result + ")"));
+            if (result.code !== import_core15.ExportResultCode.SUCCESS) {
+              (0, import_core15.globalErrorHandler)((_a2 = result.error) !== null && _a2 !== void 0 ? _a2 : new Error("SimpleSpanProcessor: span export failed (status " + result + ")"));
             }
           }).catch(function(error) {
-            (0, import_core16.globalErrorHandler)(error);
+            (0, import_core15.globalErrorHandler)(error);
           });
         };
         if (span.resource.asyncAttributesPending) {
@@ -2474,7 +2474,7 @@ var init_SimpleSpanProcessor = __esm({
             }
             return doExport();
           }, function(err) {
-            return (0, import_core16.globalErrorHandler)(err);
+            return (0, import_core15.globalErrorHandler)(err);
           });
           if (exportPromise_1 != null) {
             this._unresolvedExports.add(exportPromise_1);
@@ -4468,18 +4468,18 @@ function deserializeSpanContext(serializedString) {
   if (headers.length !== 4) {
     return null;
   }
-  var _a = __read7(headers, 4), _traceId = _a[0], _spanId = _a[1], flags = _a[3];
+  var _a = __read6(headers, 4), _traceId = _a[0], _spanId = _a[1], flags = _a[3];
   var traceId = _traceId.padStart(32, "0");
   var spanId = _spanId.padStart(16, "0");
   var traceFlags = VALID_HEX_RE.test(flags) ? parseInt(flags, 16) & 1 : 1;
   return { traceId, spanId, isRemote: true, traceFlags };
 }
-var import_api18, import_core17, __values4, __read7, UBER_TRACE_ID_HEADER, UBER_BAGGAGE_HEADER_PREFIX, JaegerPropagator, VALID_HEX_RE;
+var import_api15, import_core16, __values4, __read6, UBER_TRACE_ID_HEADER, UBER_BAGGAGE_HEADER_PREFIX, JaegerPropagator, VALID_HEX_RE;
 var init_JaegerPropagator = __esm({
   "node_modules/@opentelemetry/propagator-jaeger/build/esm/JaegerPropagator.js"() {
     "use strict";
-    import_api18 = require("@opentelemetry/api");
-    import_core17 = require("@opentelemetry/core");
+    import_api15 = require("@opentelemetry/api");
+    import_core16 = require("@opentelemetry/core");
     __values4 = function(o) {
       var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
       if (m) return m.call(o);
@@ -4491,7 +4491,7 @@ var init_JaegerPropagator = __esm({
       };
       throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     };
-    __read7 = function(o, n) {
+    __read6 = function(o, n) {
       var m = typeof Symbol === "function" && o[Symbol.iterator];
       if (!m) return o;
       var i = m.call(o), r, ar = [], e;
@@ -4523,16 +4523,16 @@ var init_JaegerPropagator = __esm({
       }
       JaegerPropagator2.prototype.inject = function(context8, carrier, setter) {
         var e_1, _a;
-        var spanContext = import_api18.trace.getSpanContext(context8);
-        var baggage = import_api18.propagation.getBaggage(context8);
-        if (spanContext && (0, import_core17.isTracingSuppressed)(context8) === false) {
-          var traceFlags = "0" + (spanContext.traceFlags || import_api18.TraceFlags.NONE).toString(16);
+        var spanContext = import_api15.trace.getSpanContext(context8);
+        var baggage = import_api15.propagation.getBaggage(context8);
+        if (spanContext && (0, import_core16.isTracingSuppressed)(context8) === false) {
+          var traceFlags = "0" + (spanContext.traceFlags || import_api15.TraceFlags.NONE).toString(16);
           setter.set(carrier, this._jaegerTraceHeader, spanContext.traceId + ":" + spanContext.spanId + ":0:" + traceFlags);
         }
         if (baggage) {
           try {
             for (var _b = __values4(baggage.getAllEntries()), _c = _b.next(); !_c.done; _c = _b.next()) {
-              var _d = __read7(_c.value, 2), key = _d[0], entry = _d[1];
+              var _d = __read6(_c.value, 2), key = _d[0], entry = _d[1];
               setter.set(carrier, this._jaegerBaggageHeaderPrefix + "-" + key, encodeURIComponent(entry.value));
             }
           } catch (e_1_1) {
@@ -4565,12 +4565,12 @@ var init_JaegerPropagator = __esm({
         if (typeof uberTraceId === "string") {
           var spanContext = deserializeSpanContext(uberTraceId);
           if (spanContext) {
-            newContext = import_api18.trace.setSpanContext(newContext, spanContext);
+            newContext = import_api15.trace.setSpanContext(newContext, spanContext);
           }
         }
         if (baggageValues.length === 0)
           return newContext;
-        var currentBaggage = (_b = import_api18.propagation.getBaggage(context8)) !== null && _b !== void 0 ? _b : import_api18.propagation.createBaggage();
+        var currentBaggage = (_b = import_api15.propagation.getBaggage(context8)) !== null && _b !== void 0 ? _b : import_api15.propagation.createBaggage();
         try {
           for (var baggageValues_1 = __values4(baggageValues), baggageValues_1_1 = baggageValues_1.next(); !baggageValues_1_1.done; baggageValues_1_1 = baggageValues_1.next()) {
             var baggageEntry = baggageValues_1_1.value;
@@ -4589,7 +4589,7 @@ var init_JaegerPropagator = __esm({
             if (e_2) throw e_2.error;
           }
         }
-        newContext = import_api18.propagation.setBaggage(newContext, currentBaggage);
+        newContext = import_api15.propagation.setBaggage(newContext, currentBaggage);
         return newContext;
       };
       JaegerPropagator2.prototype.fields = function() {
@@ -4626,7 +4626,7 @@ var require_NodeTracerProvider = __commonJS({
     var sdk_trace_base_1 = (init_esm3(), __toCommonJS(esm_exports2));
     var semver = require_semver2();
     var propagator_jaeger_1 = (init_esm4(), __toCommonJS(esm_exports3));
-    var NodeTracerProvider = class extends sdk_trace_base_1.BasicTracerProvider {
+    var NodeTracerProvider2 = class extends sdk_trace_base_1.BasicTracerProvider {
       constructor(config = {}) {
         super(config);
       }
@@ -4639,8 +4639,8 @@ var require_NodeTracerProvider = __commonJS({
         super.register(config);
       }
     };
-    exports2.NodeTracerProvider = NodeTracerProvider;
-    NodeTracerProvider._registeredPropagators = new Map([
+    exports2.NodeTracerProvider = NodeTracerProvider2;
+    NodeTracerProvider2._registeredPropagators = new Map([
       ...sdk_trace_base_1.BasicTracerProvider._registeredPropagators,
       [
         "b3",
@@ -4718,6 +4718,7 @@ var require_src2 = __commonJS({
 var index_exports = {};
 __export(index_exports, {
   MoleculerMetrics: () => MoleculerMetrics,
+  TracerProviderRegistry: () => TracerProviderRegistry,
   createLogBindings: () => createLogBindings,
   createOTelMiddleware: () => createOTelMiddleware,
   createTracingLoggerMiddleware: () => createTracingLoggerMiddleware,
@@ -4731,14 +4732,17 @@ __export(index_exports, {
   getOTelSDK: () => getOTelSDK,
   getTraceLogContext: () => getTraceLogContext,
   getTracer: () => getTracer,
+  getTracerRegistry: () => getTracerRegistry,
   hasTraceContext: () => hasTraceContext,
   initOTel: () => initOTel,
+  initTracerRegistry: () => initTracerRegistry,
   injectContext: () => injectContext,
   pickKeys: () => pickKeys,
   resetMetrics: () => resetMetrics,
   sanitizeAttributeValue: () => sanitizeAttributeValue,
   shouldExclude: () => shouldExclude,
   shutdownOTel: () => shutdownOTel,
+  shutdownTracerRegistry: () => shutdownTracerRegistry,
   truncateValue: () => truncateValue,
   withBaggage: () => withBaggage,
   wrapLogFunction: () => wrapLogFunction
@@ -4747,7 +4751,7 @@ module.exports = __toCommonJS(index_exports);
 var import_api20 = require("@opentelemetry/api");
 
 // src/middleware/action-middleware.ts
-var import_api4 = require("@opentelemetry/api");
+var import_api17 = require("@opentelemetry/api");
 
 // src/propagation/context-carrier.ts
 var import_api = require("@opentelemetry/api");
@@ -5238,14 +5242,379 @@ function resetMetrics() {
   metricsInstance = null;
 }
 
-// src/middleware/action-middleware.ts
+// src/sdk/tracer-registry.ts
+var import_sdk_trace_node = __toESM(require_src2());
+
+// node_modules/@opentelemetry/resources/build/esm/Resource.js
+var import_api16 = require("@opentelemetry/api");
+var import_semantic_conventions3 = require("@opentelemetry/semantic-conventions");
+var import_core17 = require("@opentelemetry/core");
+
+// node_modules/@opentelemetry/resources/build/esm/platform/node/default-service-name.js
+function defaultServiceName2() {
+  return "unknown_service:" + process.argv0;
+}
+
+// node_modules/@opentelemetry/resources/build/esm/Resource.js
+var __assign3 = function() {
+  __assign3 = Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+        t[p] = s[p];
+    }
+    return t;
+  };
+  return __assign3.apply(this, arguments);
+};
+var __awaiter3 = function(thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function(resolve) {
+      resolve(value);
+    });
+  }
+  return new (P || (P = Promise))(function(resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+var __generator3 = function(thisArg, body) {
+  var _ = { label: 0, sent: function() {
+    if (t[0] & 1) throw t[1];
+    return t[1];
+  }, trys: [], ops: [] }, f, y, t, g;
+  return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+    return this;
+  }), g;
+  function verb(n) {
+    return function(v) {
+      return step([n, v]);
+    };
+  }
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+    while (_) try {
+      if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+      if (y = 0, t) op = [op[0] & 2, t.value];
+      switch (op[0]) {
+        case 0:
+        case 1:
+          t = op;
+          break;
+        case 4:
+          _.label++;
+          return { value: op[1], done: false };
+        case 5:
+          _.label++;
+          y = op[1];
+          op = [0];
+          continue;
+        case 7:
+          op = _.ops.pop();
+          _.trys.pop();
+          continue;
+        default:
+          if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+            _ = 0;
+            continue;
+          }
+          if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+            _.label = op[1];
+            break;
+          }
+          if (op[0] === 6 && _.label < t[1]) {
+            _.label = t[1];
+            t = op;
+            break;
+          }
+          if (t && _.label < t[2]) {
+            _.label = t[2];
+            _.ops.push(op);
+            break;
+          }
+          if (t[2]) _.ops.pop();
+          _.trys.pop();
+          continue;
+      }
+      op = body.call(thisArg, _);
+    } catch (e) {
+      op = [6, e];
+      y = 0;
+    } finally {
+      f = t = 0;
+    }
+    if (op[0] & 5) throw op[1];
+    return { value: op[0] ? op[1] : void 0, done: true };
+  }
+};
+var __read7 = function(o, n) {
+  var m = typeof Symbol === "function" && o[Symbol.iterator];
+  if (!m) return o;
+  var i = m.call(o), r, ar = [], e;
+  try {
+    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+  } catch (error) {
+    e = { error };
+  } finally {
+    try {
+      if (r && !r.done && (m = i["return"])) m.call(i);
+    } finally {
+      if (e) throw e.error;
+    }
+  }
+  return ar;
+};
+var Resource2 = (
+  /** @class */
+  (function() {
+    function Resource3(attributes, asyncAttributesPromise) {
+      var _this = this;
+      var _a;
+      this._attributes = attributes;
+      this.asyncAttributesPending = asyncAttributesPromise != null;
+      this._syncAttributes = (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
+      this._asyncAttributesPromise = asyncAttributesPromise === null || asyncAttributesPromise === void 0 ? void 0 : asyncAttributesPromise.then(function(asyncAttributes) {
+        _this._attributes = Object.assign({}, _this._attributes, asyncAttributes);
+        _this.asyncAttributesPending = false;
+        return asyncAttributes;
+      }, function(err) {
+        import_api16.diag.debug("a resource's async attributes promise rejected: %s", err);
+        _this.asyncAttributesPending = false;
+        return {};
+      });
+    }
+    Resource3.empty = function() {
+      return Resource3.EMPTY;
+    };
+    Resource3.default = function() {
+      var _a;
+      return new Resource3((_a = {}, _a[import_semantic_conventions3.SemanticResourceAttributes.SERVICE_NAME] = defaultServiceName2(), _a[import_semantic_conventions3.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE] = import_core17.SDK_INFO[import_semantic_conventions3.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE], _a[import_semantic_conventions3.SemanticResourceAttributes.TELEMETRY_SDK_NAME] = import_core17.SDK_INFO[import_semantic_conventions3.SemanticResourceAttributes.TELEMETRY_SDK_NAME], _a[import_semantic_conventions3.SemanticResourceAttributes.TELEMETRY_SDK_VERSION] = import_core17.SDK_INFO[import_semantic_conventions3.SemanticResourceAttributes.TELEMETRY_SDK_VERSION], _a));
+    };
+    Object.defineProperty(Resource3.prototype, "attributes", {
+      get: function() {
+        var _a;
+        if (this.asyncAttributesPending) {
+          import_api16.diag.error("Accessing resource attributes before async attributes settled");
+        }
+        return (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
+      },
+      enumerable: false,
+      configurable: true
+    });
+    Resource3.prototype.waitForAsyncAttributes = function() {
+      return __awaiter3(this, void 0, void 0, function() {
+        return __generator3(this, function(_a) {
+          switch (_a.label) {
+            case 0:
+              if (!this.asyncAttributesPending) return [3, 2];
+              return [4, this._asyncAttributesPromise];
+            case 1:
+              _a.sent();
+              _a.label = 2;
+            case 2:
+              return [
+                2
+                /*return*/
+              ];
+          }
+        });
+      });
+    };
+    Resource3.prototype.merge = function(other) {
+      var _this = this;
+      var _a;
+      if (!other)
+        return this;
+      var mergedSyncAttributes = __assign3(__assign3({}, this._syncAttributes), (_a = other._syncAttributes) !== null && _a !== void 0 ? _a : other.attributes);
+      if (!this._asyncAttributesPromise && !other._asyncAttributesPromise) {
+        return new Resource3(mergedSyncAttributes);
+      }
+      var mergedAttributesPromise = Promise.all([
+        this._asyncAttributesPromise,
+        other._asyncAttributesPromise
+      ]).then(function(_a2) {
+        var _b;
+        var _c = __read7(_a2, 2), thisAsyncAttributes = _c[0], otherAsyncAttributes = _c[1];
+        return __assign3(__assign3(__assign3(__assign3({}, _this._syncAttributes), thisAsyncAttributes), (_b = other._syncAttributes) !== null && _b !== void 0 ? _b : other.attributes), otherAsyncAttributes);
+      });
+      return new Resource3(mergedSyncAttributes, mergedAttributesPromise);
+    };
+    Resource3.EMPTY = new Resource3({});
+    return Resource3;
+  })()
+);
+
+// src/sdk/tracer-registry.ts
+init_esm3();
+var import_exporter_trace_otlp_http = require("@opentelemetry/exporter-trace-otlp-http");
 var TRACER_NAME = "moleculer-otel";
+var registryInstance = null;
+var TracerProviderRegistry = class {
+  providers = /* @__PURE__ */ new Map();
+  exporter;
+  baseAttributes;
+  batchOptions;
+  useBatch;
+  logging;
+  isFirstProvider = true;
+  constructor(options) {
+    const endpoint = options.endpoint || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4318/v1/traces";
+    const environment = process.env.NODE_ENV || "development";
+    this.exporter = options.exporter || new import_exporter_trace_otlp_http.OTLPTraceExporter({ url: endpoint });
+    this.baseAttributes = options.resourceAttributes || {};
+    this.batchOptions = options.batchOptions || {};
+    this.useBatch = options.useBatch ?? environment === "production";
+    this.logging = options.logging ?? true;
+    if (this.logging) {
+      console.log("[OTEL] TracerProviderRegistry initialized");
+      console.log(`[OTEL] Exporting traces to: ${endpoint}`);
+      console.log(`[OTEL] Multi-service mode: enabled`);
+    }
+  }
+  /**
+   * Get a tracer for the specified Moleculer service.
+   * Creates a new TracerProvider with service-specific Resource if not exists.
+   *
+   * @param serviceName - The Moleculer service name (e.g., 'v1.users', 'v1.auth')
+   * @returns Tracer instance for the service
+   */
+  getTracer(serviceName) {
+    let provider = this.providers.get(serviceName);
+    if (!provider) {
+      provider = this.createProvider(serviceName);
+      this.providers.set(serviceName, provider);
+      if (this.logging) {
+        console.log(`[OTEL] Created TracerProvider for service: ${serviceName}`);
+      }
+    }
+    return provider.getTracer(TRACER_NAME);
+  }
+  /**
+   * Creates a new TracerProvider with service-specific Resource
+   */
+  createProvider(serviceName) {
+    const resource = new Resource2({
+      "service.name": serviceName,
+      ...this.baseAttributes
+    });
+    const provider = new import_sdk_trace_node.NodeTracerProvider({
+      resource
+    });
+    const processor = this.useBatch ? new BatchSpanProcessor(this.exporter, {
+      maxQueueSize: this.batchOptions.maxQueueSize ?? 2048,
+      maxExportBatchSize: this.batchOptions.maxExportBatchSize ?? 512,
+      scheduledDelayMillis: this.batchOptions.scheduledDelayMillis ?? 5e3,
+      exportTimeoutMillis: this.batchOptions.exportTimeoutMillis ?? 3e4
+    }) : new SimpleSpanProcessor(this.exporter);
+    provider.addSpanProcessor(processor);
+    if (this.isFirstProvider) {
+      provider.register();
+      this.isFirstProvider = false;
+    }
+    return provider;
+  }
+  /**
+   * Get all registered service names
+   */
+  getServiceNames() {
+    return Array.from(this.providers.keys());
+  }
+  /**
+   * Check if a service provider exists
+   */
+  hasService(serviceName) {
+    return this.providers.has(serviceName);
+  }
+  /**
+   * Shutdown all providers and flush pending spans
+   */
+  async shutdown() {
+    if (this.logging) {
+      console.log(`[OTEL] Shutting down ${this.providers.size} TracerProviders...`);
+    }
+    const shutdownPromises = Array.from(this.providers.values()).map(
+      (provider) => provider.shutdown().catch((err) => {
+        console.error("[OTEL] Error shutting down provider:", err);
+      })
+    );
+    await Promise.all(shutdownPromises);
+    this.providers.clear();
+    if (this.logging) {
+      console.log("[OTEL] All TracerProviders shut down successfully");
+    }
+  }
+  /**
+   * Force flush all pending spans
+   */
+  async forceFlush() {
+    const flushPromises = Array.from(this.providers.values()).map(
+      (provider) => provider.forceFlush().catch((err) => {
+        console.error("[OTEL] Error flushing provider:", err);
+      })
+    );
+    await Promise.all(flushPromises);
+  }
+};
+function initTracerRegistry(options = {}) {
+  if (registryInstance) {
+    if (options.logging !== false) {
+      console.log("[OTEL] TracerProviderRegistry already initialized, returning existing instance");
+    }
+    return registryInstance;
+  }
+  registryInstance = new TracerProviderRegistry(options);
+  const shutdown = async () => {
+    try {
+      await registryInstance?.shutdown();
+    } catch (err) {
+      console.error("[OTEL] Error during registry shutdown:", err);
+    }
+  };
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
+  return registryInstance;
+}
+function getTracerRegistry() {
+  return registryInstance;
+}
+async function shutdownTracerRegistry() {
+  if (registryInstance) {
+    await registryInstance.shutdown();
+    registryInstance = null;
+  }
+}
+
+// src/middleware/action-middleware.ts
+var TRACER_NAME2 = "moleculer-otel";
+function getTracerForService(serviceName, registry, useMultiService) {
+  if (useMultiService && registry) {
+    return registry.getTracer(serviceName);
+  }
+  return import_api17.trace.getTracer(TRACER_NAME2);
+}
 function isStream(value) {
   return value !== null && typeof value === "object" && typeof value.pipe === "function";
 }
 function createActionMiddleware(options) {
-  const tracer = import_api4.trace.getTracer(TRACER_NAME);
   const metaKey = options.metaKey;
+  const registry = getTracerRegistry();
+  const useMultiService = options.multiServiceMode && registry !== null;
   let metricsCollector = null;
   if (options.metrics?.enabled) {
     metricsCollector = getMetrics(options.metrics);
@@ -5261,11 +5630,12 @@ function createActionMiddleware(options) {
       }
       const parentContext = getActiveContext();
       const serviceName = resolvedActionName.split(".")[0];
+      const tracer = getTracerForService(serviceName, registry, useMultiService);
       const isStreamingRequest = isStream(params);
       const span = tracer.startSpan(
         `call ${resolvedActionName}`,
         {
-          kind: import_api4.SpanKind.CLIENT,
+          kind: import_api17.SpanKind.CLIENT,
           attributes: {
             "rpc.system": "moleculer",
             "rpc.service": serviceName,
@@ -5280,7 +5650,7 @@ function createActionMiddleware(options) {
         parentContext
       );
       const carrier = {};
-      const spanContext = import_api4.trace.setSpan(parentContext, span);
+      const spanContext = import_api17.trace.setSpan(parentContext, span);
       injectContext(spanContext, carrier);
       const enhancedOpts = {
         ...opts,
@@ -5289,7 +5659,7 @@ function createActionMiddleware(options) {
           [metaKey]: carrier
         }
       };
-      return import_api4.context.with(spanContext, async () => {
+      return import_api17.context.with(spanContext, async () => {
         try {
           const result = await next.call(this, actionName, params, enhancedOpts);
           recordSuccess(span);
@@ -5311,6 +5681,8 @@ function createActionMiddleware(options) {
       }
       const carrier = ctx.meta?.[metaKey] || {};
       const parentContext = extractContext(getActiveContext(), carrier);
+      const serviceName = actionName.split(".")[0];
+      const tracer = getTracerForService(serviceName, registry, useMultiService);
       const isStreamingRequest = isStream(ctx.params);
       const baseAttributes = buildActionAttributes(ctx, action, options);
       if (isStreamingRequest) {
@@ -5320,7 +5692,7 @@ function createActionMiddleware(options) {
       const span = tracer.startSpan(
         actionName,
         {
-          kind: import_api4.SpanKind.SERVER,
+          kind: import_api17.SpanKind.SERVER,
           attributes: baseAttributes
         },
         parentContext
@@ -5331,9 +5703,9 @@ function createActionMiddleware(options) {
         } catch {
         }
       }
-      const spanContext = import_api4.trace.setSpan(parentContext, span);
+      const spanContext = import_api17.trace.setSpan(parentContext, span);
       const startTime = metricsCollector ? Date.now() : 0;
-      return import_api4.context.with(spanContext, async () => {
+      return import_api17.context.with(spanContext, async () => {
         try {
           const result = await next(ctx);
           const isStreamingResponse = isStream(result);
@@ -5407,10 +5779,11 @@ function createActionMiddleware(options) {
       const carrier = ctx.meta?.[metaKey] || {};
       const parentContext = extractContext(getActiveContext(), carrier);
       const remoteServiceName = actionName.split(".")[0];
+      const tracer = getTracerForService(remoteServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `remote:${actionName}`,
         {
-          kind: import_api4.SpanKind.CLIENT,
+          kind: import_api17.SpanKind.CLIENT,
           attributes: {
             "rpc.system": "moleculer",
             "rpc.service": remoteServiceName,
@@ -5424,8 +5797,8 @@ function createActionMiddleware(options) {
         },
         parentContext
       );
-      const spanContext = import_api4.trace.setSpan(parentContext, span);
-      return import_api4.context.with(spanContext, async () => {
+      const spanContext = import_api17.trace.setSpan(parentContext, span);
+      return import_api17.context.with(spanContext, async () => {
         try {
           const result = await next(ctx);
           recordSuccess(span);
@@ -5443,11 +5816,18 @@ function createActionMiddleware(options) {
 }
 
 // src/middleware/event-middleware.ts
-var import_api5 = require("@opentelemetry/api");
-var TRACER_NAME2 = "moleculer-otel";
+var import_api18 = require("@opentelemetry/api");
+var TRACER_NAME3 = "moleculer-otel";
+function getTracerForService2(serviceName, registry, useMultiService) {
+  if (useMultiService && registry) {
+    return registry.getTracer(serviceName);
+  }
+  return import_api18.trace.getTracer(TRACER_NAME3);
+}
 function createEventMiddleware(options) {
-  const tracer = import_api5.trace.getTracer(TRACER_NAME2);
   const metaKey = options.metaKey;
+  const registry = getTracerRegistry();
+  const useMultiService = options.multiServiceMode && registry !== null;
   let metricsCollector = null;
   if (options.metrics?.enabled) {
     metricsCollector = getMetrics(options.metrics);
@@ -5459,10 +5839,11 @@ function createEventMiddleware(options) {
       }
       const parentContext = getActiveContext();
       const eventServiceName = eventName.split(".")[0];
+      const tracer = getTracerForService2(eventServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `emit:${eventName}`,
         {
-          kind: import_api5.SpanKind.PRODUCER,
+          kind: import_api18.SpanKind.PRODUCER,
           attributes: {
             "messaging.system": "moleculer",
             "messaging.operation": "emit",
@@ -5476,7 +5857,7 @@ function createEventMiddleware(options) {
         parentContext
       );
       const carrier = {};
-      const spanContext = import_api5.trace.setSpan(parentContext, span);
+      const spanContext = import_api18.trace.setSpan(parentContext, span);
       injectContext(spanContext, carrier);
       const enhancedOpts = {
         ...opts,
@@ -5485,7 +5866,7 @@ function createEventMiddleware(options) {
           [metaKey]: carrier
         }
       };
-      return import_api5.context.with(spanContext, async () => {
+      return import_api18.context.with(spanContext, async () => {
         try {
           await next.call(this, eventName, payload, enhancedOpts);
           recordSuccess(span);
@@ -5508,10 +5889,11 @@ function createEventMiddleware(options) {
       }
       const parentContext = getActiveContext();
       const broadcastServiceName = eventName.split(".")[0];
+      const tracer = getTracerForService2(broadcastServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `broadcast:${eventName}`,
         {
-          kind: import_api5.SpanKind.PRODUCER,
+          kind: import_api18.SpanKind.PRODUCER,
           attributes: {
             "messaging.system": "moleculer",
             "messaging.operation": "broadcast",
@@ -5525,7 +5907,7 @@ function createEventMiddleware(options) {
         parentContext
       );
       const carrier = {};
-      const spanContext = import_api5.trace.setSpan(parentContext, span);
+      const spanContext = import_api18.trace.setSpan(parentContext, span);
       injectContext(spanContext, carrier);
       const enhancedOpts = {
         ...opts,
@@ -5534,7 +5916,7 @@ function createEventMiddleware(options) {
           [metaKey]: carrier
         }
       };
-      return import_api5.context.with(spanContext, async () => {
+      return import_api18.context.with(spanContext, async () => {
         try {
           await next.call(this, eventName, payload, enhancedOpts);
           recordSuccess(span);
@@ -5558,10 +5940,12 @@ function createEventMiddleware(options) {
       }
       const carrier = ctx.meta?.[metaKey] || {};
       const parentContext = extractContext(getActiveContext(), carrier);
+      const handlerServiceName = ctx.service?.name || eventName.split(".")[0];
+      const tracer = getTracerForService2(handlerServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `handle:${eventName}`,
         {
-          kind: import_api5.SpanKind.CONSUMER,
+          kind: import_api18.SpanKind.CONSUMER,
           attributes: buildEventAttributes(ctx, eventName, options)
         },
         parentContext
@@ -5572,8 +5956,8 @@ function createEventMiddleware(options) {
         } catch {
         }
       }
-      const spanContext = import_api5.trace.setSpan(parentContext, span);
-      return import_api5.context.with(spanContext, async () => {
+      const spanContext = import_api18.trace.setSpan(parentContext, span);
+      return import_api18.context.with(spanContext, async () => {
         try {
           await next(ctx);
           recordSuccess(span);
@@ -5633,7 +6017,8 @@ var DEFAULT_OPTIONS = {
   excludeActions: [],
   excludeEvents: [],
   maxAttributeValueLength: 1024,
-  perServiceTracing: false
+  perServiceTracing: false,
+  multiServiceMode: false
 };
 function resolveOptions(options = {}) {
   return {
@@ -5646,225 +6031,8 @@ function resolveOptions(options = {}) {
 
 // src/sdk/init.ts
 var import_sdk_node = require("@opentelemetry/sdk-node");
-var import_exporter_trace_otlp_http = require("@opentelemetry/exporter-trace-otlp-http");
-
-// node_modules/@opentelemetry/resources/build/esm/Resource.js
-var import_api6 = require("@opentelemetry/api");
-var import_semantic_conventions = require("@opentelemetry/semantic-conventions");
-var import_core = require("@opentelemetry/core");
-
-// node_modules/@opentelemetry/resources/build/esm/platform/node/default-service-name.js
-function defaultServiceName() {
-  return "unknown_service:" + process.argv0;
-}
-
-// node_modules/@opentelemetry/resources/build/esm/Resource.js
-var __assign = function() {
-  __assign = Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-        t[p] = s[p];
-    }
-    return t;
-  };
-  return __assign.apply(this, arguments);
-};
-var __awaiter = function(thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
-    });
-  }
-  return new (P || (P = Promise))(function(resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-var __generator = function(thisArg, body) {
-  var _ = { label: 0, sent: function() {
-    if (t[0] & 1) throw t[1];
-    return t[1];
-  }, trys: [], ops: [] }, f, y, t, g;
-  return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
-    return this;
-  }), g;
-  function verb(n) {
-    return function(v) {
-      return step([n, v]);
-    };
-  }
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-    while (_) try {
-      if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-      if (y = 0, t) op = [op[0] & 2, t.value];
-      switch (op[0]) {
-        case 0:
-        case 1:
-          t = op;
-          break;
-        case 4:
-          _.label++;
-          return { value: op[1], done: false };
-        case 5:
-          _.label++;
-          y = op[1];
-          op = [0];
-          continue;
-        case 7:
-          op = _.ops.pop();
-          _.trys.pop();
-          continue;
-        default:
-          if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-            _ = 0;
-            continue;
-          }
-          if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-            _.label = op[1];
-            break;
-          }
-          if (op[0] === 6 && _.label < t[1]) {
-            _.label = t[1];
-            t = op;
-            break;
-          }
-          if (t && _.label < t[2]) {
-            _.label = t[2];
-            _.ops.push(op);
-            break;
-          }
-          if (t[2]) _.ops.pop();
-          _.trys.pop();
-          continue;
-      }
-      op = body.call(thisArg, _);
-    } catch (e) {
-      op = [6, e];
-      y = 0;
-    } finally {
-      f = t = 0;
-    }
-    if (op[0] & 5) throw op[1];
-    return { value: op[0] ? op[1] : void 0, done: true };
-  }
-};
-var __read = function(o, n) {
-  var m = typeof Symbol === "function" && o[Symbol.iterator];
-  if (!m) return o;
-  var i = m.call(o), r, ar = [], e;
-  try {
-    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-  } catch (error) {
-    e = { error };
-  } finally {
-    try {
-      if (r && !r.done && (m = i["return"])) m.call(i);
-    } finally {
-      if (e) throw e.error;
-    }
-  }
-  return ar;
-};
-var Resource = (
-  /** @class */
-  (function() {
-    function Resource3(attributes, asyncAttributesPromise) {
-      var _this = this;
-      var _a;
-      this._attributes = attributes;
-      this.asyncAttributesPending = asyncAttributesPromise != null;
-      this._syncAttributes = (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
-      this._asyncAttributesPromise = asyncAttributesPromise === null || asyncAttributesPromise === void 0 ? void 0 : asyncAttributesPromise.then(function(asyncAttributes) {
-        _this._attributes = Object.assign({}, _this._attributes, asyncAttributes);
-        _this.asyncAttributesPending = false;
-        return asyncAttributes;
-      }, function(err) {
-        import_api6.diag.debug("a resource's async attributes promise rejected: %s", err);
-        _this.asyncAttributesPending = false;
-        return {};
-      });
-    }
-    Resource3.empty = function() {
-      return Resource3.EMPTY;
-    };
-    Resource3.default = function() {
-      var _a;
-      return new Resource3((_a = {}, _a[import_semantic_conventions.SemanticResourceAttributes.SERVICE_NAME] = defaultServiceName(), _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE] = import_core.SDK_INFO[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_LANGUAGE], _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_NAME] = import_core.SDK_INFO[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_NAME], _a[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_VERSION] = import_core.SDK_INFO[import_semantic_conventions.SemanticResourceAttributes.TELEMETRY_SDK_VERSION], _a));
-    };
-    Object.defineProperty(Resource3.prototype, "attributes", {
-      get: function() {
-        var _a;
-        if (this.asyncAttributesPending) {
-          import_api6.diag.error("Accessing resource attributes before async attributes settled");
-        }
-        return (_a = this._attributes) !== null && _a !== void 0 ? _a : {};
-      },
-      enumerable: false,
-      configurable: true
-    });
-    Resource3.prototype.waitForAsyncAttributes = function() {
-      return __awaiter(this, void 0, void 0, function() {
-        return __generator(this, function(_a) {
-          switch (_a.label) {
-            case 0:
-              if (!this.asyncAttributesPending) return [3, 2];
-              return [4, this._asyncAttributesPromise];
-            case 1:
-              _a.sent();
-              _a.label = 2;
-            case 2:
-              return [
-                2
-                /*return*/
-              ];
-          }
-        });
-      });
-    };
-    Resource3.prototype.merge = function(other) {
-      var _this = this;
-      var _a;
-      if (!other)
-        return this;
-      var mergedSyncAttributes = __assign(__assign({}, this._syncAttributes), (_a = other._syncAttributes) !== null && _a !== void 0 ? _a : other.attributes);
-      if (!this._asyncAttributesPromise && !other._asyncAttributesPromise) {
-        return new Resource3(mergedSyncAttributes);
-      }
-      var mergedAttributesPromise = Promise.all([
-        this._asyncAttributesPromise,
-        other._asyncAttributesPromise
-      ]).then(function(_a2) {
-        var _b;
-        var _c = __read(_a2, 2), thisAsyncAttributes = _c[0], otherAsyncAttributes = _c[1];
-        return __assign(__assign(__assign(__assign({}, _this._syncAttributes), thisAsyncAttributes), (_b = other._syncAttributes) !== null && _b !== void 0 ? _b : other.attributes), otherAsyncAttributes);
-      });
-      return new Resource3(mergedSyncAttributes, mergedAttributesPromise);
-    };
-    Resource3.EMPTY = new Resource3({});
-    return Resource3;
-  })()
-);
-
-// src/sdk/init.ts
-var import_sdk_trace_node = __toESM(require_src2());
+var import_exporter_trace_otlp_http2 = require("@opentelemetry/exporter-trace-otlp-http");
+var import_sdk_trace_node2 = __toESM(require_src2());
 var SEMRESATTRS_SERVICE_NAME2 = "service.name";
 var SEMRESATTRS_SERVICE_VERSION = "service.version";
 var sdkInstance = null;
@@ -5873,16 +6041,16 @@ function createSampler(options) {
   const ratio = options?.ratio ?? 1;
   switch (strategy) {
     case "always_off":
-      return new import_sdk_trace_node.AlwaysOffSampler();
+      return new import_sdk_trace_node2.AlwaysOffSampler();
     case "ratio":
-      return new import_sdk_trace_node.TraceIdRatioBasedSampler(ratio);
+      return new import_sdk_trace_node2.TraceIdRatioBasedSampler(ratio);
     case "parent_based":
-      return new import_sdk_trace_node.ParentBasedSampler({
-        root: new import_sdk_trace_node.TraceIdRatioBasedSampler(ratio)
+      return new import_sdk_trace_node2.ParentBasedSampler({
+        root: new import_sdk_trace_node2.TraceIdRatioBasedSampler(ratio)
       });
     case "always_on":
     default:
-      return new import_sdk_trace_node.AlwaysOnSampler();
+      return new import_sdk_trace_node2.AlwaysOnSampler();
   }
 }
 function initOTel(options = {}) {
@@ -5906,16 +6074,16 @@ function initOTel(options = {}) {
     "deployment.environment": environment,
     ...options.resourceAttributes
   };
-  const exporter = new import_exporter_trace_otlp_http.OTLPTraceExporter({
+  const exporter = new import_exporter_trace_otlp_http2.OTLPTraceExporter({
     url: endpoint
   });
   const useBatch = options.batchProcessor ?? environment === "production";
-  const spanProcessor = useBatch ? new import_sdk_trace_node.BatchSpanProcessor(exporter, {
+  const spanProcessor = useBatch ? new import_sdk_trace_node2.BatchSpanProcessor(exporter, {
     maxQueueSize: options.batchOptions?.maxQueueSize ?? 2048,
     maxExportBatchSize: options.batchOptions?.maxExportBatchSize ?? 512,
     scheduledDelayMillis: options.batchOptions?.scheduledDelayMillis ?? 5e3,
     exportTimeoutMillis: options.batchOptions?.exportTimeoutMillis ?? 3e4
-  }) : new import_sdk_trace_node.SimpleSpanProcessor(exporter);
+  }) : new import_sdk_trace_node2.SimpleSpanProcessor(exporter);
   const sampler = createSampler(options.sampling);
   const samplingStrategy = options.sampling?.strategy ?? "always_on";
   const samplingRatio = options.sampling?.ratio ?? 1;
@@ -5929,7 +6097,7 @@ function initOTel(options = {}) {
     console.log(`[OTEL] Instrumentations: ${options.instrumentations.length} registered`);
   }
   const sdk = new import_sdk_node.NodeSDK({
-    resource: new Resource(resourceAttributes),
+    resource: new Resource2(resourceAttributes),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spanProcessor,
     sampler,
@@ -6034,6 +6202,7 @@ var index_default = createOTelMiddleware;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   MoleculerMetrics,
+  TracerProviderRegistry,
   createLogBindings,
   createOTelMiddleware,
   createTracingLoggerMiddleware,
@@ -6046,14 +6215,17 @@ var index_default = createOTelMiddleware;
   getOTelSDK,
   getTraceLogContext,
   getTracer,
+  getTracerRegistry,
   hasTraceContext,
   initOTel,
+  initTracerRegistry,
   injectContext,
   pickKeys,
   resetMetrics,
   sanitizeAttributeValue,
   shouldExclude,
   shutdownOTel,
+  shutdownTracerRegistry,
   truncateValue,
   withBaggage,
   wrapLogFunction
