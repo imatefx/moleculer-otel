@@ -5188,21 +5188,25 @@ function createActionMiddleware(options) {
   }
   function call(next) {
     return function(actionName, params, opts = {}) {
-      if (shouldExclude(actionName, options.excludeActions)) {
+      const resolvedActionName = typeof actionName === "string" ? actionName : actionName?.action;
+      if (!resolvedActionName || typeof resolvedActionName !== "string") {
+        return next.call(this, actionName, params, opts);
+      }
+      if (shouldExclude(resolvedActionName, options.excludeActions)) {
         return next.call(this, actionName, params, opts);
       }
       const parentContext = getActiveContext();
-      const serviceName = actionName.split(".")[0];
+      const serviceName = resolvedActionName.split(".")[0];
       const isStreamingRequest = isStream(params);
       const span = tracer.startSpan(
-        `call ${actionName}`,
+        `call ${resolvedActionName}`,
         {
           kind: SpanKind.CLIENT,
           attributes: {
             "rpc.system": "moleculer",
             "rpc.service": serviceName,
-            "rpc.method": actionName,
-            "moleculer.action": actionName,
+            "rpc.method": resolvedActionName,
+            "moleculer.action": resolvedActionName,
             "moleculer.service": serviceName,
             ...this?.nodeID && { "moleculer.caller": this.nodeID },
             ...isStreamingRequest && { "moleculer.streaming": true },

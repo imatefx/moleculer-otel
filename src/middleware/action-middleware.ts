@@ -64,30 +64,39 @@ export function createActionMiddleware(
   ) {
     return function (
       this: ServiceBroker,
-      actionName: string,
+      actionName: string | Record<string, unknown>,
       params: unknown,
       opts: CallOptions = {}
     ): Promise<unknown> {
-      // Skip excluded actions
-      if (shouldExclude(actionName, options.excludeActions)) {
-        return next.call(this, actionName, params, opts);
+      // Handle action definition objects (e.g., { action: 'users.get' })
+      const resolvedActionName = typeof actionName === 'string'
+        ? actionName
+        : (actionName as Record<string, unknown>)?.action as string | undefined;
+
+      // Skip if we can't resolve action name or it's excluded
+      if (!resolvedActionName || typeof resolvedActionName !== 'string') {
+        return next.call(this, actionName as string, params, opts);
+      }
+
+      if (shouldExclude(resolvedActionName, options.excludeActions)) {
+        return next.call(this, actionName as string, params, opts);
       }
 
       const parentContext = getActiveContext();
-      const serviceName = actionName.split('.')[0];
+      const serviceName = resolvedActionName.split('.')[0];
 
       // Detect streaming
       const isStreamingRequest = isStream(params);
 
       const span = tracer.startSpan(
-        `call ${actionName}`,
+        `call ${resolvedActionName}`,
         {
           kind: SpanKind.CLIENT,
           attributes: {
             'rpc.system': 'moleculer',
             'rpc.service': serviceName,
-            'rpc.method': actionName,
-            'moleculer.action': actionName,
+            'rpc.method': resolvedActionName,
+            'moleculer.action': resolvedActionName,
             'moleculer.service': serviceName,
             ...(this?.nodeID && { 'moleculer.caller': this.nodeID }),
             ...(isStreamingRequest && { 'moleculer.streaming': true }),
