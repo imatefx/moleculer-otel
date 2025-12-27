@@ -17,6 +17,21 @@ import { getTracerRegistry, TracerProviderRegistry } from '../sdk/tracer-registr
 const TRACER_NAME = 'moleculer-otel';
 
 /**
+ * Extract service name from action name.
+ * Action name format: {serviceName}.{methodName}
+ * Examples:
+ *   - 'v1.auth.verifyToken' → 'v1.auth'
+ *   - 'v1.jobs.data.count' → 'v1.jobs.data'
+ *   - 'users.get' → 'users'
+ */
+function extractServiceName(actionName: string): string {
+  const parts = actionName.split('.');
+  if (parts.length <= 1) return actionName;
+  // Remove the last part (method name) and join the rest
+  return parts.slice(0, -1).join('.');
+}
+
+/**
  * Get the appropriate tracer based on service name and configuration.
  * In multi-service mode, returns a service-specific tracer from the registry.
  * Otherwise, returns the global tracer.
@@ -103,7 +118,7 @@ export function createActionMiddleware(
       }
 
       const parentContext = getActiveContext();
-      const serviceName = resolvedActionName.split('.')[0];
+      const serviceName = extractServiceName(resolvedActionName);
 
       // Get appropriate tracer for this service
       const tracer = getTracerForService(serviceName, registry, useMultiService);
@@ -178,7 +193,7 @@ export function createActionMiddleware(
       const parentContext = extractContext(getActiveContext(), carrier);
 
       // Get service-specific tracer in multi-service mode
-      const serviceName = actionName.split('.')[0];
+      const serviceName = extractServiceName(actionName);
       const tracer = getTracerForService(serviceName, registry, useMultiService);
 
       // Detect streaming request
@@ -319,7 +334,7 @@ export function createActionMiddleware(
       const carrier = (ctx.meta?.[metaKey] as Record<string, string>) || {};
       const parentContext = extractContext(getActiveContext(), carrier);
 
-      const remoteServiceName = actionName.split('.')[0];
+      const remoteServiceName = extractServiceName(actionName);
 
       // Get service-specific tracer in multi-service mode
       const tracer = getTracerForService(remoteServiceName, registry, useMultiService);

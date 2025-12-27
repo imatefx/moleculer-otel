@@ -8,6 +8,20 @@ import {
 } from '../utils/attribute-sanitizer';
 
 /**
+ * Extract service name from action/event name.
+ * Format: {serviceName}.{methodName}
+ * Examples:
+ *   - 'v1.auth.verifyToken' → 'v1.auth'
+ *   - 'v1.jobs.data.count' → 'v1.jobs.data'
+ *   - 'users.get' → 'users'
+ */
+function extractServiceName(name: string): string {
+  const parts = name.split('.');
+  if (parts.length <= 1) return name;
+  return parts.slice(0, -1).join('.');
+}
+
+/**
  * Checks if the context originated from an API Gateway request
  */
 function isApiGatewayRequest(ctx: MoleculerContext): boolean {
@@ -76,7 +90,7 @@ export function buildActionAttributes(
   action: ActionSchema,
   options: ResolvedOptions
 ): Attributes {
-  const serviceName = action.name.split('.')[0];
+  const serviceName = extractServiceName(action.name);
 
   const attrs: Attributes = {
     // RPC semantic conventions
@@ -167,7 +181,7 @@ export function buildEventAttributes(
   options: ResolvedOptions
 ): Attributes {
   // Extract service name from context or event name
-  const serviceName = ctx.service?.name || eventName.split('.')[0];
+  const serviceName = ctx.service?.name || extractServiceName(eventName);
 
   const attrs: Attributes = {
     // Messaging semantic conventions

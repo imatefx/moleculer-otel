@@ -4893,6 +4893,11 @@ function getNestedValue(obj, path) {
 }
 
 // src/tracing/span-attributes.ts
+function extractServiceName(name) {
+  const parts = name.split(".");
+  if (parts.length <= 1) return name;
+  return parts.slice(0, -1).join(".");
+}
 function isApiGatewayRequest(ctx) {
   return !!(ctx.meta?.$requestHeaders || ctx.meta?.$statusCode !== void 0);
 }
@@ -4932,7 +4937,7 @@ function buildHttpAttributes(ctx, maxLength) {
   return attrs;
 }
 function buildActionAttributes(ctx, action, options) {
-  const serviceName = action.name.split(".")[0];
+  const serviceName = extractServiceName(action.name);
   const attrs = {
     // RPC semantic conventions
     "rpc.system": "moleculer",
@@ -4992,7 +4997,7 @@ function buildActionAttributes(ctx, action, options) {
   return attrs;
 }
 function buildEventAttributes(ctx, eventName, options) {
-  const serviceName = ctx.service?.name || eventName.split(".")[0];
+  const serviceName = ctx.service?.name || extractServiceName(eventName);
   const attrs = {
     // Messaging semantic conventions
     "messaging.system": "moleculer",
@@ -5576,6 +5581,11 @@ async function shutdownTracerRegistry() {
 
 // src/middleware/action-middleware.ts
 var TRACER_NAME2 = "moleculer-otel";
+function extractServiceName2(actionName) {
+  const parts = actionName.split(".");
+  if (parts.length <= 1) return actionName;
+  return parts.slice(0, -1).join(".");
+}
 function getTracerForService(serviceName, registry, useMultiService) {
   if (useMultiService && registry) {
     return registry.getTracer(serviceName);
@@ -5603,7 +5613,7 @@ function createActionMiddleware(options) {
         return next.call(this, actionName, params, opts);
       }
       const parentContext = getActiveContext();
-      const serviceName = resolvedActionName.split(".")[0];
+      const serviceName = extractServiceName2(resolvedActionName);
       const tracer = getTracerForService(serviceName, registry, useMultiService);
       const isStreamingRequest = isStream(params);
       const span = tracer.startSpan(
@@ -5655,7 +5665,7 @@ function createActionMiddleware(options) {
       }
       const carrier = ctx.meta?.[metaKey] || {};
       const parentContext = extractContext(getActiveContext(), carrier);
-      const serviceName = actionName.split(".")[0];
+      const serviceName = extractServiceName2(actionName);
       const tracer = getTracerForService(serviceName, registry, useMultiService);
       const isStreamingRequest = isStream(ctx.params);
       const baseAttributes = buildActionAttributes(ctx, action, options);
@@ -5752,7 +5762,7 @@ function createActionMiddleware(options) {
       }
       const carrier = ctx.meta?.[metaKey] || {};
       const parentContext = extractContext(getActiveContext(), carrier);
-      const remoteServiceName = actionName.split(".")[0];
+      const remoteServiceName = extractServiceName2(actionName);
       const tracer = getTracerForService(remoteServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `remote:${actionName}`,
@@ -5792,6 +5802,11 @@ function createActionMiddleware(options) {
 // src/middleware/event-middleware.ts
 import { trace as trace8, context as context6, SpanKind as SpanKind3 } from "@opentelemetry/api";
 var TRACER_NAME3 = "moleculer-otel";
+function extractServiceName3(eventName) {
+  const parts = eventName.split(".");
+  if (parts.length <= 1) return eventName;
+  return parts.slice(0, -1).join(".");
+}
 function getTracerForService2(serviceName, registry, useMultiService) {
   if (useMultiService && registry) {
     return registry.getTracer(serviceName);
@@ -5812,7 +5827,7 @@ function createEventMiddleware(options) {
         return next.call(this, eventName, payload, opts);
       }
       const parentContext = getActiveContext();
-      const eventServiceName = eventName.split(".")[0];
+      const eventServiceName = extractServiceName3(eventName);
       const tracer = getTracerForService2(eventServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `emit:${eventName}`,
@@ -5862,7 +5877,7 @@ function createEventMiddleware(options) {
         return next.call(this, eventName, payload, opts);
       }
       const parentContext = getActiveContext();
-      const broadcastServiceName = eventName.split(".")[0];
+      const broadcastServiceName = extractServiceName3(eventName);
       const tracer = getTracerForService2(broadcastServiceName, registry, useMultiService);
       const span = tracer.startSpan(
         `broadcast:${eventName}`,

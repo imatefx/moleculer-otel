@@ -16,6 +16,21 @@ import { getTracerRegistry, TracerProviderRegistry } from '../sdk/tracer-registr
 const TRACER_NAME = 'moleculer-otel';
 
 /**
+ * Extract service name from event name.
+ * Event name format: {serviceName}.{eventName}
+ * Examples:
+ *   - 'v1.users.created' → 'v1.users'
+ *   - 'cache.clean.lines' → 'cache.clean'
+ *   - 'user.created' → 'user'
+ */
+function extractServiceName(eventName: string): string {
+  const parts = eventName.split('.');
+  if (parts.length <= 1) return eventName;
+  // Remove the last part (event name) and join the rest
+  return parts.slice(0, -1).join('.');
+}
+
+/**
  * Get the appropriate tracer based on service name and configuration.
  * In multi-service mode, returns a service-specific tracer from the registry.
  * Otherwise, returns the global tracer.
@@ -81,8 +96,8 @@ export function createEventMiddleware(
 
       const parentContext = getActiveContext();
 
-      // Extract service name from event (events are often namespaced like 'users.created')
-      const eventServiceName = eventName.split('.')[0];
+      // Extract service name from event (events are often namespaced like 'v1.users.created')
+      const eventServiceName = extractServiceName(eventName);
 
       // Get service-specific tracer in multi-service mode
       const tracer = getTracerForService(eventServiceName, registry, useMultiService);
@@ -154,8 +169,8 @@ export function createEventMiddleware(
 
       const parentContext = getActiveContext();
 
-      // Extract service name from event (events are often namespaced like 'users.created')
-      const broadcastServiceName = eventName.split('.')[0];
+      // Extract service name from event (events are often namespaced like 'v1.users.created')
+      const broadcastServiceName = extractServiceName(eventName);
 
       // Get service-specific tracer in multi-service mode
       const tracer = getTracerForService(broadcastServiceName, registry, useMultiService);
