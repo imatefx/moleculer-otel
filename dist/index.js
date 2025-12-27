@@ -5819,7 +5819,8 @@ var Resource = (
 
 // src/sdk/init.ts
 var import_sdk_trace_node = __toESM(require_src2());
-var import_semantic_conventions4 = require("@opentelemetry/semantic-conventions");
+var SEMRESATTRS_SERVICE_NAME2 = "service.name";
+var SEMRESATTRS_SERVICE_VERSION = "service.version";
 var sdkInstance = null;
 function createSampler(options) {
   const strategy = options?.strategy ?? "always_on";
@@ -5854,8 +5855,8 @@ function initOTel(options = {}) {
     console.log(`[OTEL] Exporting traces to: ${endpoint}`);
   }
   const resourceAttributes = {
-    [import_semantic_conventions4.ATTR_SERVICE_NAME]: serviceName,
-    [import_semantic_conventions4.ATTR_SERVICE_VERSION]: serviceVersion,
+    [SEMRESATTRS_SERVICE_NAME2]: serviceName,
+    [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
     "deployment.environment": environment,
     ...options.resourceAttributes
   };

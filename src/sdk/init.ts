@@ -10,10 +10,9 @@ import {
   ParentBasedSampler,
   Sampler,
 } from '@opentelemetry/sdk-trace-node';
-import {
-  ATTR_SERVICE_NAME,
-  ATTR_SERVICE_VERSION,
-} from '@opentelemetry/semantic-conventions';
+// Use string literals for reliability across semantic-conventions versions
+const SEMRESATTRS_SERVICE_NAME = 'service.name';
+const SEMRESATTRS_SERVICE_VERSION = 'service.version';
 
 /**
  * Batch processor configuration options
@@ -172,8 +171,8 @@ export function initOTel(options: OTelInitOptions = {}): NodeSDK {
   }
 
   const resourceAttributes: Record<string, string> = {
-    [ATTR_SERVICE_NAME]: serviceName,
-    [ATTR_SERVICE_VERSION]: serviceVersion,
+    [SEMRESATTRS_SERVICE_NAME]: serviceName,
+    [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
     'deployment.environment': environment,
     ...options.resourceAttributes,
   };
