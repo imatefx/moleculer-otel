@@ -88,8 +88,10 @@ export function createActionMiddleware(
             'rpc.service': serviceName,
             'rpc.method': actionName,
             'moleculer.action': actionName,
+            'moleculer.service': serviceName,
             ...(this?.nodeID && { 'moleculer.caller': this.nodeID }),
             ...(isStreamingRequest && { 'moleculer.streaming': true }),
+            ...(options.perServiceTracing && { 'service.name': serviceName }),
           },
         },
         parentContext
@@ -281,17 +283,20 @@ export function createActionMiddleware(
       const carrier = (ctx.meta?.[metaKey] as Record<string, string>) || {};
       const parentContext = extractContext(getActiveContext(), carrier);
 
+      const remoteServiceName = actionName.split('.')[0];
       const span = tracer.startSpan(
         `remote:${actionName}`,
         {
           kind: SpanKind.CLIENT,
           attributes: {
             'rpc.system': 'moleculer',
-            'rpc.service': actionName.split('.')[0],
+            'rpc.service': remoteServiceName,
             'rpc.method': actionName,
             'moleculer.action': actionName,
+            'moleculer.service': remoteServiceName,
             'moleculer.remote': true,
             'moleculer.nodeID': ctx.nodeID,
+            ...(options.perServiceTracing && { 'service.name': remoteServiceName }),
           },
         },
         parentContext

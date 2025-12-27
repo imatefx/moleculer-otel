@@ -61,6 +61,9 @@ export function createEventMiddleware(
 
       const parentContext = getActiveContext();
 
+      // Extract service name from event (events are often namespaced like 'users.created')
+      const eventServiceName = eventName.split('.')[0];
+
       const span = tracer.startSpan(
         `emit:${eventName}`,
         {
@@ -71,6 +74,8 @@ export function createEventMiddleware(
             'messaging.destination.name': eventName,
             'moleculer.event': eventName,
             'moleculer.event.type': 'emit',
+            'moleculer.service': eventServiceName,
+            ...(options.perServiceTracing && { 'service.name': eventServiceName }),
           },
         },
         parentContext
@@ -126,6 +131,9 @@ export function createEventMiddleware(
 
       const parentContext = getActiveContext();
 
+      // Extract service name from event (events are often namespaced like 'users.created')
+      const broadcastServiceName = eventName.split('.')[0];
+
       const span = tracer.startSpan(
         `broadcast:${eventName}`,
         {
@@ -136,6 +144,8 @@ export function createEventMiddleware(
             'messaging.destination.name': eventName,
             'moleculer.event': eventName,
             'moleculer.event.type': 'broadcast',
+            'moleculer.service': broadcastServiceName,
+            ...(options.perServiceTracing && { 'service.name': broadcastServiceName }),
           },
         },
         parentContext

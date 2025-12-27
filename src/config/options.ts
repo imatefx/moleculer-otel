@@ -118,17 +118,29 @@ export interface MoleculerOTelOptions {
    * ```
    */
   metrics?: MetricsOptions;
+
+  /**
+   * When enabled, sets `service.name` span attribute to the Moleculer service name.
+   * This allows different Moleculer services to appear separately in tracing backends
+   * like Jaeger that support span-level service identification.
+   *
+   * Note: `moleculer.service` attribute is always added regardless of this setting.
+   *
+   * @default false
+   */
+  perServiceTracing?: boolean;
 }
 
 /**
  * Internal resolved options with all defaults applied
  */
 export interface ResolvedOptions extends Required<Omit<MoleculerOTelOptions,
-  'serviceName' | 'propagator' | 'errorFilter' | 'onSpanStart' | 'onSpanEnd' | 'metrics'>> {
+  'serviceName' | 'propagator' | 'errorFilter' | 'onSpanStart' | 'onSpanEnd' | 'metrics' | 'perServiceTracing'>> {
   serviceName?: string;
   propagator?: TextMapPropagator;
   errorFilter?: ErrorFilterCallback;
   onSpanStart?: OnSpanStartCallback;
   onSpanEnd?: OnSpanEndCallback;
   metrics?: MetricsOptions;
+  perServiceTracing: boolean;
 }

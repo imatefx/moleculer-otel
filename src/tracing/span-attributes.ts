@@ -25,10 +25,16 @@ export function buildActionAttributes(
 
     // Moleculer-specific attributes
     'moleculer.action': action.name,
+    'moleculer.service': serviceName,
     'moleculer.nodeID': ctx.nodeID || 'local',
     'moleculer.requestID': ctx.requestID,
     'moleculer.level': ctx.level,
   };
+
+  // Set service.name span attribute when perServiceTracing is enabled
+  if (options.perServiceTracing) {
+    attrs['service.name'] = serviceName;
+  }
 
   if (ctx.caller) {
     attrs['moleculer.caller'] = ctx.caller;
@@ -93,6 +99,9 @@ export function buildEventAttributes(
   eventName: string,
   options: ResolvedOptions
 ): Attributes {
+  // Extract service name from context or event name
+  const serviceName = ctx.service?.name || eventName.split('.')[0];
+
   const attrs: Attributes = {
     // Messaging semantic conventions
     'messaging.system': 'moleculer',
@@ -101,12 +110,14 @@ export function buildEventAttributes(
 
     // Moleculer-specific attributes
     'moleculer.event': eventName,
+    'moleculer.service': serviceName,
     'moleculer.nodeID': ctx.nodeID || 'local',
     'moleculer.requestID': ctx.requestID,
   };
 
-  if (ctx.service?.name) {
-    attrs['moleculer.service'] = ctx.service.name;
+  // Set service.name span attribute when perServiceTracing is enabled
+  if (options.perServiceTracing) {
+    attrs['service.name'] = serviceName;
   }
 
   if (ctx.eventGroups && ctx.eventGroups.length > 0) {
