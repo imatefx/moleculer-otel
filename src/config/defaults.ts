@@ -6,7 +6,7 @@ import type { MoleculerOTelOptions, ResolvedOptions } from './options';
 export const DEFAULT_OPTIONS: ResolvedOptions = {
   traceActions: true,
   traceEvents: true,
-  actionParams: false,
+  actionParams: true,
   actionMeta: false,
   actionResponse: false,
   eventPayload: false,

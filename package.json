@@ -1,6 +1,6 @@
 {
   "name": "moleculer-otel",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "OpenTelemetry integration for Moleculer microservices framework",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

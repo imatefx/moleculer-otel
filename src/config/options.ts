@@ -35,7 +35,7 @@ export interface MoleculerOTelOptions {
    * - false: exclude all params
    * - string[]: include only specified param keys
    * - function: custom filter function
-   * @default false
+   * @default true
    */
   actionParams?: boolean | string[] | AttributeExtractor<unknown>;
 

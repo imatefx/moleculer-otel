@@ -5583,7 +5583,7 @@ function createMiddleware(options) {
 var DEFAULT_OPTIONS = {
   traceActions: true,
   traceEvents: true,
-  actionParams: false,
+  actionParams: true,
   actionMeta: false,
   actionResponse: false,
   eventPayload: false,
