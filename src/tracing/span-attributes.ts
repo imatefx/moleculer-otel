@@ -8,6 +8,67 @@ import {
 } from '../utils/attribute-sanitizer';
 
 /**
+ * Checks if the context originated from an API Gateway request
+ */
+function isApiGatewayRequest(ctx: MoleculerContext): boolean {
+  // moleculer-web sets these meta fields for HTTP requests
+  return !!(ctx.meta?.$requestHeaders || ctx.meta?.$statusCode !== undefined);
+}
+
+/**
+ * Builds HTTP-specific attributes for API Gateway requests
+ */
+function buildHttpAttributes(ctx: MoleculerContext, maxLength: number): Attributes {
+  const attrs: Attributes = {};
+  const meta = ctx.meta as Record<string, unknown> | undefined;
+
+  if (!meta) return attrs;
+
+  // HTTP method from caller (e.g., "api.rest")
+  if (ctx.caller?.startsWith('api.')) {
+    attrs['http.route'] = ctx.caller;
+  }
+
+  // Request path/URL from meta
+  if (meta.$requestPath) {
+    attrs['http.target'] = String(meta.$requestPath).slice(0, maxLength);
+    attrs['url.path'] = String(meta.$requestPath).slice(0, maxLength);
+  }
+
+  // HTTP method
+  if (meta.$requestMethod) {
+    attrs['http.method'] = String(meta.$requestMethod).toUpperCase();
+    attrs['http.request.method'] = String(meta.$requestMethod).toUpperCase();
+  }
+
+  // Query string parameters
+  if (meta.$requestQuery && typeof meta.$requestQuery === 'object') {
+    const query = meta.$requestQuery as Record<string, unknown>;
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== null) {
+        const sanitized = sanitizeAttributeValue(value, maxLength);
+        if (sanitized !== undefined) {
+          attrs[`http.query.${key}`] = sanitized;
+        }
+      }
+    }
+  }
+
+  // User agent
+  const headers = meta.$requestHeaders as Record<string, unknown> | undefined;
+  if (headers?.['user-agent']) {
+    attrs['user_agent.original'] = String(headers['user-agent']).slice(0, maxLength);
+  }
+
+  // Client IP
+  if (meta.$clientIP) {
+    attrs['client.address'] = String(meta.$clientIP);
+  }
+
+  return attrs;
+}
+
+/**
  * Builds span attributes for action invocations following OTEL semantic conventions.
  */
 export function buildActionAttributes(
@@ -86,6 +147,12 @@ export function buildActionAttributes(
       options.maxAttributeValueLength
     );
     Object.assign(attrs, prefixAttributes(metaAttrs, 'moleculer.meta'));
+  }
+
+  // Add HTTP attributes for API Gateway requests
+  if (isApiGatewayRequest(ctx)) {
+    const httpAttrs = buildHttpAttributes(ctx, options.maxAttributeValueLength);
+    Object.assign(attrs, httpAttrs);
   }
 
   return attrs;

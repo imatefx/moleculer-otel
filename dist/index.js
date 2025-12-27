@@ -4915,6 +4915,44 @@ function getNestedValue(obj, path) {
 }
 
 // src/tracing/span-attributes.ts
+function isApiGatewayRequest(ctx) {
+  return !!(ctx.meta?.$requestHeaders || ctx.meta?.$statusCode !== void 0);
+}
+function buildHttpAttributes(ctx, maxLength) {
+  const attrs = {};
+  const meta = ctx.meta;
+  if (!meta) return attrs;
+  if (ctx.caller?.startsWith("api.")) {
+    attrs["http.route"] = ctx.caller;
+  }
+  if (meta.$requestPath) {
+    attrs["http.target"] = String(meta.$requestPath).slice(0, maxLength);
+    attrs["url.path"] = String(meta.$requestPath).slice(0, maxLength);
+  }
+  if (meta.$requestMethod) {
+    attrs["http.method"] = String(meta.$requestMethod).toUpperCase();
+    attrs["http.request.method"] = String(meta.$requestMethod).toUpperCase();
+  }
+  if (meta.$requestQuery && typeof meta.$requestQuery === "object") {
+    const query = meta.$requestQuery;
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== void 0 && value !== null) {
+        const sanitized = sanitizeAttributeValue(value, maxLength);
+        if (sanitized !== void 0) {
+          attrs[`http.query.${key}`] = sanitized;
+        }
+      }
+    }
+  }
+  const headers = meta.$requestHeaders;
+  if (headers?.["user-agent"]) {
+    attrs["user_agent.original"] = String(headers["user-agent"]).slice(0, maxLength);
+  }
+  if (meta.$clientIP) {
+    attrs["client.address"] = String(meta.$clientIP);
+  }
+  return attrs;
+}
 function buildActionAttributes(ctx, action, options) {
   const serviceName = action.name.split(".")[0];
   const attrs = {
@@ -4968,6 +5006,10 @@ function buildActionAttributes(ctx, action, options) {
       options.maxAttributeValueLength
     );
     Object.assign(attrs, prefixAttributes(metaAttrs, "moleculer.meta"));
+  }
+  if (isApiGatewayRequest(ctx)) {
+    const httpAttrs = buildHttpAttributes(ctx, options.maxAttributeValueLength);
+    Object.assign(attrs, httpAttrs);
   }
   return attrs;
 }
