@@ -16,8 +16,8 @@ import { initOTel } from '../../src';
 // Determine protocol and endpoint
 const protocol = (process.env.OTEL_EXPORTER_PROTOCOL || 'http').toLowerCase();
 const defaultEndpoints = {
-  http: 'https://jaeger-http-col.linemeup.in/v1/traces',
-  grpc: 'https://jaeger-grpc-col.linemeup.in',
+  http: 'http://localhost:4318/v1/traces',
+  grpc: 'http://localhost:4317',
 };
 const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
   defaultEndpoints[protocol as keyof typeof defaultEndpoints] ||

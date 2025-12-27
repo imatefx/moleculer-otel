@@ -165,7 +165,7 @@ async function main() {
   // Wait longer for traces to be exported
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  console.log('View traces at: https://jaeger-ui.linemeup.in');
+  console.log('View traces at: http://localhost:16686');
 
   // Graceful shutdown
   await broker.stop();
