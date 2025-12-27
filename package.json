@@ -1,0 +1,74 @@
+{
+  "name": "moleculer-otel",
+  "version": "1.0.0",
+  "description": "OpenTelemetry integration for Moleculer microservices framework",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src tests --ext .ts",
+    "lint:fix": "eslint src tests --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "moleculer",
+    "opentelemetry",
+    "otel",
+    "tracing",
+    "distributed-tracing",
+    "observability",
+    "microservices",
+    "middleware"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/moleculer-otel"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-node": "^0.49.0",
+    "moleculer": "^0.14.0"
+  },
+  "dependencies": {
+    "@opentelemetry/core": "^1.22.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.49.0",
+    "@opentelemetry/semantic-conventions": "^1.22.0"
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/context-async-hooks": "^1.22.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.49.0",
+    "@opentelemetry/sdk-node": "^0.49.0",
+    "@opentelemetry/sdk-trace-base": "^1.22.0",
+    "@opentelemetry/sdk-trace-node": "^1.22.0",
+    "@types/node": "^20.11.0",
+    "eslint": "^8.56.0",
+    "moleculer": "^0.14.32",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
