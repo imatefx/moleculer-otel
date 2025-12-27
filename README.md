@@ -8,6 +8,7 @@ This package provides automatic distributed tracing and metrics for Moleculer 0.
 
 - **Tracing**: Automatic tracing for actions and events
 - **Context Propagation**: W3C TraceContext across service boundaries
+- **API Gateway Support**: Auto-detect HTTP requests and capture path, method, query params
 - **Metrics**: Action duration, call count, error count, event emissions
 - **Baggage**: Propagate custom data across service boundaries
 - **Stream Support**: Automatic tracing of streaming actions
@@ -148,8 +149,8 @@ createOTelMiddleware({
   traceActions: true,                  // Trace action calls (default: true)
   traceEvents: true,                   // Trace events (default: true)
 
-  // Attribute inclusion
-  actionParams: ['id', 'userId'],      // Include specific params in spans
+  // Attribute inclusion (actionParams defaults to true)
+  actionParams: ['id', 'userId'],      // Include specific params (or true for all, false to disable)
   actionMeta: true,                    // Include all meta (or string[] for specific keys)
   actionResponse: ['count', 'total'],  // Include response fields
   eventPayload: true,                  // Include event payload
@@ -299,6 +300,23 @@ Errors are automatically categorized:
 | `moleculer.error.timeout` | Whether it was a timeout error |
 | `moleculer.error.circuit_breaker` | Whether circuit breaker triggered |
 | `moleculer.error.validation` | Whether it was a validation error |
+
+### API Gateway / HTTP Attributes
+
+When requests come through [moleculer-web](https://github.com/moleculerjs/moleculer-web) API Gateway, the middleware automatically detects and captures HTTP-specific attributes:
+
+| Attribute | Description |
+|-----------|-------------|
+| `http.method` | HTTP method (GET, POST, etc.) |
+| `http.request.method` | HTTP method (OTEL 1.20+ convention) |
+| `http.target` | Request path (e.g., `/api/users/123`) |
+| `url.path` | Request path (OTEL 1.20+ convention) |
+| `http.route` | API Gateway route (e.g., `api.rest`) |
+| `http.query.*` | Query string parameters (e.g., `http.query.page`) |
+| `user_agent.original` | User-Agent header |
+| `client.address` | Client IP address |
+
+These attributes are automatically added when the middleware detects moleculer-web meta fields (`$requestHeaders`, `$requestPath`, `$requestMethod`, etc.).
 
 ## Span Types
 
